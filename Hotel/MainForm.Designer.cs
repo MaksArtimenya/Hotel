@@ -33,6 +33,7 @@
             Column2 = new DataGridViewTextBoxColumn();
             Column3 = new DataGridViewTextBoxColumn();
             Column4 = new DataGridViewTextBoxColumn();
+            buttonToEditingGuests = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).BeginInit();
             SuspendLayout();
             // 
@@ -75,11 +76,22 @@
             Column4.Name = "Column4";
             Column4.Width = 125;
             // 
+            // buttonToEditingGuests
+            // 
+            buttonToEditingGuests.Location = new Point(577, 470);
+            buttonToEditingGuests.Name = "buttonToEditingGuests";
+            buttonToEditingGuests.Size = new Size(265, 52);
+            buttonToEditingGuests.TabIndex = 1;
+            buttonToEditingGuests.Text = "Edit guests";
+            buttonToEditingGuests.UseVisualStyleBackColor = true;
+            buttonToEditingGuests.Click += buttonToEditingGuests_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 553);
+            Controls.Add(buttonToEditingGuests);
             Controls.Add(dataGridViewShowRooms);
             Name = "MainForm";
             Text = "MainForm";
@@ -94,5 +106,6 @@
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column4;
+        private Button buttonToEditingGuests;
     }
 }

@@ -51,5 +51,10 @@ namespace Hotel
                 }
             }
         }
+
+        private void buttonToEditingGuests_Click(object sender, EventArgs e)
+        {
+            new EditingGuestsForm().ShowDialog();
+        }
     }
 }
