@@ -39,6 +39,7 @@
             // 
             // dataGridViewShowRooms
             // 
+            dataGridViewShowRooms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewShowRooms.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewShowRooms.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column4 });
             dataGridViewShowRooms.Location = new Point(81, 81);
@@ -50,35 +51,31 @@
             // 
             // Column1
             // 
-            Column1.HeaderText = "Column1";
+            Column1.HeaderText = "Number";
             Column1.MinimumWidth = 6;
             Column1.Name = "Column1";
-            Column1.Width = 125;
             // 
             // Column2
             // 
-            Column2.HeaderText = "Column2";
+            Column2.HeaderText = "Number of places";
             Column2.MinimumWidth = 6;
             Column2.Name = "Column2";
-            Column2.Width = 125;
             // 
             // Column3
             // 
-            Column3.HeaderText = "Column3";
+            Column3.HeaderText = "Occupied places";
             Column3.MinimumWidth = 6;
             Column3.Name = "Column3";
-            Column3.Width = 125;
             // 
             // Column4
             // 
-            Column4.HeaderText = "Column4";
+            Column4.HeaderText = "Price";
             Column4.MinimumWidth = 6;
             Column4.Name = "Column4";
-            Column4.Width = 125;
             // 
             // buttonToEditingGuests
             // 
-            buttonToEditingGuests.Location = new Point(577, 470);
+            buttonToEditingGuests.Location = new Point(621, 470);
             buttonToEditingGuests.Name = "buttonToEditingGuests";
             buttonToEditingGuests.Size = new Size(265, 52);
             buttonToEditingGuests.TabIndex = 1;
@@ -102,10 +99,10 @@
         #endregion
 
         private DataGridView dataGridViewShowRooms;
+        private Button buttonToEditingGuests;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column4;
-        private Button buttonToEditingGuests;
     }
 }

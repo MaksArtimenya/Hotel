@@ -39,6 +39,12 @@
             textBoxPassportID = new TextBox();
             textBoxGender = new TextBox();
             textBoxFullName = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
+            label3 = new Label();
+            label4 = new Label();
+            label5 = new Label();
+            label6 = new Label();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -46,14 +52,20 @@
             // 
             listBoxShowGuests.FormattingEnabled = true;
             listBoxShowGuests.ItemHeight = 20;
-            listBoxShowGuests.Location = new Point(43, 65);
+            listBoxShowGuests.Location = new Point(41, 51);
             listBoxShowGuests.Name = "listBoxShowGuests";
-            listBoxShowGuests.Size = new Size(262, 324);
+            listBoxShowGuests.Size = new Size(262, 444);
             listBoxShowGuests.TabIndex = 0;
             listBoxShowGuests.SelectedIndexChanged += listBoxShowGuests_SelectedIndexChanged;
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label6);
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(buttonCancel);
             groupBox1.Controls.Add(buttonRemoveGuest);
             groupBox1.Controls.Add(buttonSaveNewGuest);
@@ -63,18 +75,18 @@
             groupBox1.Controls.Add(textBoxPassportID);
             groupBox1.Controls.Add(textBoxGender);
             groupBox1.Controls.Add(textBoxFullName);
-            groupBox1.Location = new Point(341, 65);
+            groupBox1.Location = new Point(334, 51);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(635, 449);
+            groupBox1.Size = new Size(619, 444);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "groupBox1";
             // 
             // buttonCancel
             // 
-            buttonCancel.Location = new Point(39, 408);
+            buttonCancel.Location = new Point(29, 408);
             buttonCancel.Name = "buttonCancel";
-            buttonCancel.Size = new Size(255, 29);
+            buttonCancel.Size = new Size(265, 29);
             buttonCancel.TabIndex = 8;
             buttonCancel.Text = "Cancel";
             buttonCancel.UseVisualStyleBackColor = true;
@@ -83,9 +95,9 @@
             // buttonRemoveGuest
             // 
             buttonRemoveGuest.Enabled = false;
-            buttonRemoveGuest.Location = new Point(39, 343);
+            buttonRemoveGuest.Location = new Point(29, 348);
             buttonRemoveGuest.Name = "buttonRemoveGuest";
-            buttonRemoveGuest.Size = new Size(255, 29);
+            buttonRemoveGuest.Size = new Size(265, 29);
             buttonRemoveGuest.TabIndex = 7;
             buttonRemoveGuest.Text = "Remove";
             buttonRemoveGuest.UseVisualStyleBackColor = true;
@@ -93,9 +105,9 @@
             // 
             // buttonSaveNewGuest
             // 
-            buttonSaveNewGuest.Location = new Point(39, 373);
+            buttonSaveNewGuest.Location = new Point(29, 378);
             buttonSaveNewGuest.Name = "buttonSaveNewGuest";
-            buttonSaveNewGuest.Size = new Size(255, 29);
+            buttonSaveNewGuest.Size = new Size(265, 29);
             buttonSaveNewGuest.TabIndex = 6;
             buttonSaveNewGuest.Text = "Save guest";
             buttonSaveNewGuest.UseVisualStyleBackColor = true;
@@ -107,19 +119,19 @@
             listBoxShowAvaibleRooms.ItemHeight = 20;
             listBoxShowAvaibleRooms.Location = new Point(342, 56);
             listBoxShowAvaibleRooms.Name = "listBoxShowAvaibleRooms";
-            listBoxShowAvaibleRooms.Size = new Size(244, 284);
+            listBoxShowAvaibleRooms.Size = new Size(244, 364);
             listBoxShowAvaibleRooms.TabIndex = 5;
             // 
             // textBoxLengthOfStay
             // 
-            textBoxLengthOfStay.Location = new Point(29, 310);
+            textBoxLengthOfStay.Location = new Point(29, 308);
             textBoxLengthOfStay.Name = "textBoxLengthOfStay";
             textBoxLengthOfStay.Size = new Size(265, 27);
             textBoxLengthOfStay.TabIndex = 4;
             // 
             // textBoxArrivalDate
             // 
-            textBoxArrivalDate.Location = new Point(29, 246);
+            textBoxArrivalDate.Location = new Point(29, 245);
             textBoxArrivalDate.Name = "textBoxArrivalDate";
             textBoxArrivalDate.Size = new Size(265, 27);
             textBoxArrivalDate.TabIndex = 3;
@@ -145,11 +157,65 @@
             textBoxFullName.Size = new Size(265, 27);
             textBoxFullName.TabIndex = 0;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(29, 33);
+            label1.Name = "label1";
+            label1.Size = new Size(73, 20);
+            label1.TabIndex = 9;
+            label1.Text = "Full name";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(29, 96);
+            label2.Name = "label2";
+            label2.Size = new Size(57, 20);
+            label2.TabIndex = 10;
+            label2.Text = "Gender";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(29, 159);
+            label3.Name = "label3";
+            label3.Size = new Size(83, 20);
+            label3.TabIndex = 11;
+            label3.Text = "Passport ID";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(29, 222);
+            label4.Name = "label4";
+            label4.Size = new Size(86, 20);
+            label4.TabIndex = 12;
+            label4.Text = "Arrival date";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(29, 285);
+            label5.Name = "label5";
+            label5.Size = new Size(102, 20);
+            label5.TabIndex = 13;
+            label5.Text = "Length of stay";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(342, 33);
+            label6.Name = "label6";
+            label6.Size = new Size(105, 20);
+            label6.TabIndex = 14;
+            label6.Text = "Avaible rooms";
+            // 
             // EditingGuestsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1036, 526);
+            ClientSize = new Size(982, 553);
             Controls.Add(groupBox1);
             Controls.Add(listBoxShowGuests);
             Name = "EditingGuestsForm";
@@ -172,5 +238,11 @@
         private TextBox textBoxFullName;
         private Button buttonRemoveGuest;
         private Button buttonCancel;
+        private Label label6;
+        private Label label5;
+        private Label label4;
+        private Label label3;
+        private Label label2;
+        private Label label1;
     }
 }

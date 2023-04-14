@@ -15,6 +15,13 @@ namespace Hotel
         public static List<Room> Rooms = new List<Room>();
         public static List<RoomAllocation> RoomAllocations = new List<RoomAllocation>();
 
+        public static void Initialization()
+        {
+            GetGuestsFromDB();
+            GetRoomsFromDB();
+            GetRoomAllocationFromDB();
+        }
+
         public static void GetGuestsFromDB()
         {
             try

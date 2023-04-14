@@ -34,10 +34,10 @@ namespace Hotel
                 textBoxPassportID.Text, textBoxArrivalDate.Text, textBoxLengthOfStay.Text);
             if (groupBox1.Text == namesOfGroupBox[0])
             {
+                InternalData.AddGuest(newGuest);
                 listBoxShowGuests.Items.Clear();
                 listBoxShowGuests.Items.AddRange(InternalData.Guests.ToArray());
-                InternalData.AddGuest(newGuest);
-                
+
                 if (listBoxShowAvaibleRooms.SelectedIndex != 0)
                 {
                     InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
@@ -56,7 +56,7 @@ namespace Hotel
                 {
                     if (bufIdOfAvaibleRooms != 0)
                     {
-                        RoomAllocation oldRoomAllocation = new RoomAllocation(InternalData.GetGuestID(oldGuest),
+                        RoomAllocation oldRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
                             ((Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms]).Number);
                         RoomAllocation newRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
                             ((Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex]).Number);
