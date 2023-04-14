@@ -30,6 +30,8 @@
         {
             listBoxShowGuests = new ListBox();
             groupBox1 = new GroupBox();
+            buttonCancel = new Button();
+            buttonRemoveGuest = new Button();
             buttonSaveNewGuest = new Button();
             listBoxShowAvaibleRooms = new ListBox();
             textBoxLengthOfStay = new TextBox();
@@ -48,9 +50,12 @@
             listBoxShowGuests.Name = "listBoxShowGuests";
             listBoxShowGuests.Size = new Size(262, 324);
             listBoxShowGuests.TabIndex = 0;
+            listBoxShowGuests.SelectedIndexChanged += listBoxShowGuests_SelectedIndexChanged;
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(buttonCancel);
+            groupBox1.Controls.Add(buttonRemoveGuest);
             groupBox1.Controls.Add(buttonSaveNewGuest);
             groupBox1.Controls.Add(listBoxShowAvaibleRooms);
             groupBox1.Controls.Add(textBoxLengthOfStay);
@@ -60,10 +65,31 @@
             groupBox1.Controls.Add(textBoxFullName);
             groupBox1.Location = new Point(341, 65);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(635, 434);
+            groupBox1.Size = new Size(635, 449);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "groupBox1";
+            // 
+            // buttonCancel
+            // 
+            buttonCancel.Location = new Point(39, 408);
+            buttonCancel.Name = "buttonCancel";
+            buttonCancel.Size = new Size(255, 29);
+            buttonCancel.TabIndex = 8;
+            buttonCancel.Text = "Cancel";
+            buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.Click += buttonCancel_Click;
+            // 
+            // buttonRemoveGuest
+            // 
+            buttonRemoveGuest.Enabled = false;
+            buttonRemoveGuest.Location = new Point(39, 343);
+            buttonRemoveGuest.Name = "buttonRemoveGuest";
+            buttonRemoveGuest.Size = new Size(255, 29);
+            buttonRemoveGuest.TabIndex = 7;
+            buttonRemoveGuest.Text = "Remove";
+            buttonRemoveGuest.UseVisualStyleBackColor = true;
+            buttonRemoveGuest.Click += buttonRemoveGuest_Click;
             // 
             // buttonSaveNewGuest
             // 
@@ -71,7 +97,7 @@
             buttonSaveNewGuest.Name = "buttonSaveNewGuest";
             buttonSaveNewGuest.Size = new Size(255, 29);
             buttonSaveNewGuest.TabIndex = 6;
-            buttonSaveNewGuest.Text = "Save new guest";
+            buttonSaveNewGuest.Text = "Save guest";
             buttonSaveNewGuest.UseVisualStyleBackColor = true;
             buttonSaveNewGuest.Click += buttonSaveNewGuest_Click;
             // 
@@ -144,5 +170,7 @@
         private TextBox textBoxPassportID;
         private TextBox textBoxGender;
         private TextBox textBoxFullName;
+        private Button buttonRemoveGuest;
+        private Button buttonCancel;
     }
 }
