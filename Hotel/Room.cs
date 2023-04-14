@@ -27,7 +27,14 @@ namespace Hotel
 
         public override string ToString()
         {
-            return Number + $" ({FreePlaces})";
+            if (Number != -1)
+            {
+                return Number + $" ({FreePlaces})";
+            }
+            else
+            {
+                return "-";
+            }
         }
     }
 }
