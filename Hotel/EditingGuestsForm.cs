@@ -18,9 +18,6 @@ namespace Hotel
         public EditingGuestsForm()
         {
             InitializeComponent();
-            InternalData.GetGuestsFromDB();
-            InternalData.GetRoomsFromDB();
-            InternalData.GetRoomAllocationFromDB();
             listBoxShowGuests.Items.AddRange(InternalData.Guests.ToArray());
             listBoxShowAvaibleRooms.Items.AddRange(InternalData.Rooms.ToArray());
             listBoxShowAvaibleRooms.Items.Insert(0, new Room(-1, -1, -1, -1));
@@ -141,6 +138,28 @@ namespace Hotel
             listBoxShowAvaibleRooms.SelectedIndex = 0;
             buttonRemoveGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
+        }
+
+        private void buttonRoomInfo_Click(object sender, EventArgs e)
+        {
+            Room room = (Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex];
+            MessageBox.Show($"Room:" + $"\nNumber: {room.Number}" +
+                $"\nNumber of places: {room.NumberOfPlaces}" +
+                $"\nOccupied places: {room.OccupiedPlaces}" +
+                $"\nFree places: {room.FreePlaces}" +
+                $"\nPrice: {room.Price}");
+        }
+
+        private void listBoxShowAvaibleRooms_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBoxShowAvaibleRooms.SelectedIndex == 0)
+            {
+                buttonRoomInfo.Enabled = false;
+            }
+            else
+            {
+                buttonRoomInfo.Enabled = true;
+            }
         }
     }
 }

@@ -18,5 +18,10 @@ namespace Hotel
         {
             new EditingGuestsForm().ShowDialog();
         }
+
+        private void buttonToEditingRooms_Click(object sender, EventArgs e)
+        {
+            new EditRoomsForm().ShowDialog();
+        }
     }
 }

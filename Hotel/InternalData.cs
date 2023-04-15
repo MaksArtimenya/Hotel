@@ -130,7 +130,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Added {number} objects");
                     connection.Close();
                 }
             }
@@ -171,7 +170,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Removed objects: {number}");
                     connection.Close();
                 }
             }
@@ -214,7 +212,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Updated {number} objects");
                     connection.Close();
                 }
             }
@@ -260,6 +257,127 @@ namespace Hotel
                     }
 
                     reader.Close();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                string error = string.Empty;
+
+                foreach (SqlError err in ex.Errors)
+                {
+                    error += "Message: "
+                    + err.Message
+                    + "\n"
+                    + "Level: "
+                    + err.Class
+                    + "\n"
+                    + "Procedure: "
+                    + err.Procedure
+                    + "\n"
+                    + "Line Number: "
+                    + err.LineNumber
+                    + "\n";
+                    MessageBox.Show(error);
+                }
+            }
+        }
+
+        public static void AddRoom(Room room)
+        {
+            Rooms.Add(room);
+            try
+            {
+                string sqlExpression = $"INSERT INTO Rooms (Number, Number_Of_Places, Occupied_Places, Price) VALUES " +
+                    $"({room.Number}, {room.NumberOfPlaces}, {room.OccupiedPlaces}, {room.Price})";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    int number = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                string error = string.Empty;
+
+                foreach (SqlError err in ex.Errors)
+                {
+                    error += "Message: "
+                    + err.Message
+                    + "\n"
+                    + "Level: "
+                    + err.Class
+                    + "\n"
+                    + "Procedure: "
+                    + err.Procedure
+                    + "\n"
+                    + "Line Number: "
+                    + err.LineNumber
+                    + "\n";
+                    MessageBox.Show(error);
+                }
+            }
+        }
+
+        public static void RemoveRoom(Room room)
+        {
+            Rooms.Remove(room);
+            try
+            {
+                string sqlExpression = $"DELETE FROM Rooms WHERE " +
+                    $"Number = {room.Number} AND Number_Of_Places = {room.NumberOfPlaces} " +
+                    $"AND Occupied_Places = {room.OccupiedPlaces} AND Price = {room.Price}";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    int number = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                string error = string.Empty;
+
+                foreach (SqlError err in ex.Errors)
+                {
+                    error += "Message: "
+                    + err.Message
+                    + "\n"
+                    + "Level: "
+                    + err.Class
+                    + "\n"
+                    + "Procedure: "
+                    + err.Procedure
+                    + "\n"
+                    + "Line Number: "
+                    + err.LineNumber
+                    + "\n";
+                    MessageBox.Show(error);
+                }
+            }
+        }
+
+        public static void EditRoom(Room oldRoom, Room newRoom)
+        {
+            Rooms[Rooms.IndexOf(oldRoom)] = newRoom;
+            try
+            {
+                string sqlExpression = $"UPDATE Rooms SET " +
+                    $"Number = {newRoom.Number}, Number_Of_Places = {newRoom.NumberOfPlaces}," +
+                    $" Occupied_Places = {newRoom.OccupiedPlaces}, Price = {newRoom.Price} WHERE " +
+                    $"Number = {oldRoom.Number} AND Number_Of_Places = {oldRoom.NumberOfPlaces} AND" +
+                    $" Occupied_Places = {oldRoom.OccupiedPlaces} AND Price = {oldRoom.Price}";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    int number = command.ExecuteNonQuery();
                     connection.Close();
                 }
             }
@@ -344,7 +462,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Added {number} objects");
                     connection.Close();
                 }
             }
@@ -384,7 +501,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Removed objects: {number}");
                     connection.Close();
                 }
             }
@@ -425,7 +541,6 @@ namespace Hotel
                     connection.Open();
                     SqlCommand command = new SqlCommand(sqlExpression, connection);
                     int number = command.ExecuteNonQuery();
-                    MessageBox.Show($"Updated {number} objects");
                     connection.Close();
                 }
             }

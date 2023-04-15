@@ -29,7 +29,7 @@ namespace Hotel
         {
             if (Number != -1)
             {
-                return Number + $" ({FreePlaces})";
+                return Number + $" ({FreePlaces}/{NumberOfPlaces})";
             }
             else
             {

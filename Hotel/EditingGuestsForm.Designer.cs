@@ -30,6 +30,13 @@
         {
             listBoxShowGuests = new ListBox();
             groupBox1 = new GroupBox();
+            buttonRoomInfo = new Button();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
             buttonCancel = new Button();
             buttonRemoveGuest = new Button();
             buttonSaveNewGuest = new Button();
@@ -39,12 +46,6 @@
             textBoxPassportID = new TextBox();
             textBoxGender = new TextBox();
             textBoxFullName = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -60,6 +61,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(buttonRoomInfo);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(label4);
@@ -81,6 +83,71 @@
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "groupBox1";
+            // 
+            // buttonRoomInfo
+            // 
+            buttonRoomInfo.Enabled = false;
+            buttonRoomInfo.Location = new Point(342, 408);
+            buttonRoomInfo.Name = "buttonRoomInfo";
+            buttonRoomInfo.Size = new Size(244, 29);
+            buttonRoomInfo.TabIndex = 15;
+            buttonRoomInfo.Text = "Info";
+            buttonRoomInfo.UseVisualStyleBackColor = true;
+            buttonRoomInfo.Click += buttonRoomInfo_Click;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(342, 33);
+            label6.Name = "label6";
+            label6.Size = new Size(105, 20);
+            label6.TabIndex = 14;
+            label6.Text = "Avaible rooms";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(29, 285);
+            label5.Name = "label5";
+            label5.Size = new Size(102, 20);
+            label5.TabIndex = 13;
+            label5.Text = "Length of stay";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(29, 222);
+            label4.Name = "label4";
+            label4.Size = new Size(86, 20);
+            label4.TabIndex = 12;
+            label4.Text = "Arrival date";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(29, 159);
+            label3.Name = "label3";
+            label3.Size = new Size(83, 20);
+            label3.TabIndex = 11;
+            label3.Text = "Passport ID";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(29, 96);
+            label2.Name = "label2";
+            label2.Size = new Size(57, 20);
+            label2.TabIndex = 10;
+            label2.Text = "Gender";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(29, 33);
+            label1.Name = "label1";
+            label1.Size = new Size(73, 20);
+            label1.TabIndex = 9;
+            label1.Text = "Full name";
             // 
             // buttonCancel
             // 
@@ -119,8 +186,9 @@
             listBoxShowAvaibleRooms.ItemHeight = 20;
             listBoxShowAvaibleRooms.Location = new Point(342, 56);
             listBoxShowAvaibleRooms.Name = "listBoxShowAvaibleRooms";
-            listBoxShowAvaibleRooms.Size = new Size(244, 364);
+            listBoxShowAvaibleRooms.Size = new Size(244, 344);
             listBoxShowAvaibleRooms.TabIndex = 5;
+            listBoxShowAvaibleRooms.SelectedIndexChanged += listBoxShowAvaibleRooms_SelectedIndexChanged;
             // 
             // textBoxLengthOfStay
             // 
@@ -157,60 +225,6 @@
             textBoxFullName.Size = new Size(265, 27);
             textBoxFullName.TabIndex = 0;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(29, 33);
-            label1.Name = "label1";
-            label1.Size = new Size(73, 20);
-            label1.TabIndex = 9;
-            label1.Text = "Full name";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(29, 96);
-            label2.Name = "label2";
-            label2.Size = new Size(57, 20);
-            label2.TabIndex = 10;
-            label2.Text = "Gender";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(29, 159);
-            label3.Name = "label3";
-            label3.Size = new Size(83, 20);
-            label3.TabIndex = 11;
-            label3.Text = "Passport ID";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(29, 222);
-            label4.Name = "label4";
-            label4.Size = new Size(86, 20);
-            label4.TabIndex = 12;
-            label4.Text = "Arrival date";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(29, 285);
-            label5.Name = "label5";
-            label5.Size = new Size(102, 20);
-            label5.TabIndex = 13;
-            label5.Text = "Length of stay";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new Point(342, 33);
-            label6.Name = "label6";
-            label6.Size = new Size(105, 20);
-            label6.TabIndex = 14;
-            label6.Text = "Avaible rooms";
-            // 
             // EditingGuestsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -244,5 +258,6 @@
         private Label label3;
         private Label label2;
         private Label label1;
+        private Button buttonRoomInfo;
     }
 }
