@@ -121,6 +121,7 @@
             buttonGuestInfo.TabIndex = 9;
             buttonGuestInfo.Text = "Info";
             buttonGuestInfo.UseVisualStyleBackColor = true;
+            buttonGuestInfo.Click += buttonGuestInfo_Click;
             // 
             // buttonCancel
             // 
@@ -161,6 +162,7 @@
             listBoxShowPlacesOfRoom.Name = "listBoxShowPlacesOfRoom";
             listBoxShowPlacesOfRoom.Size = new Size(231, 224);
             listBoxShowPlacesOfRoom.TabIndex = 5;
+            listBoxShowPlacesOfRoom.SelectedIndexChanged += listBoxShowPlacesOfRoom_SelectedIndexChanged;
             // 
             // textBoxPrice
             // 

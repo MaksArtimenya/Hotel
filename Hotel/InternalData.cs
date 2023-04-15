@@ -117,6 +117,76 @@ namespace Hotel
             return guestID;
         }
 
+        public static List<Guest> GetGuestsByRoom(Room room)
+        {
+            List<Guest> guests = new List<Guest>();
+            try
+            {
+                List<int> guestsID = new List<int>();
+                string sqlExpression = $"SELECT ID_Guest FROM RoomAllocation WHERE " +
+                    $"Number_Of_Room = {room.Number}";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        guestsID.Add(reader.GetInt32(0));
+                    }
+
+                    reader.Close();
+                    connection.Close();
+                }
+
+                for (int i = 0; i < guestsID.Count; i++)
+                {
+                    string sqlExpression2 = $"SELECT * FROM Guests WHERE " +
+                    $"ID_Guest = {guestsID[i]}";
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(sqlExpression2, connection);
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            guests.Add(new Guest(reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                        }
+
+                        reader.Close();
+                        connection.Close();
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                string error = string.Empty;
+
+                foreach (SqlError err in ex.Errors)
+                {
+                    error += "Message: "
+                    + err.Message
+                    + "\n"
+                    + "Level: "
+                    + err.Class
+                    + "\n"
+                    + "Procedure: "
+                    + err.Procedure
+                    + "\n"
+                    + "Line Number: "
+                    + err.LineNumber
+                    + "\n";
+                    MessageBox.Show(error);
+                }
+            }
+
+            return guests;
+        }
+
         public static void AddGuest(Guest guest)
         {
             Guests.Add(guest);
