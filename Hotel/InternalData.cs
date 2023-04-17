@@ -242,6 +242,8 @@ namespace Hotel
                     int number = command.ExecuteNonQuery();
                     connection.Close();
                 }
+
+                Initialization();
             }
             catch (SqlException ex)
             {
@@ -284,6 +286,8 @@ namespace Hotel
                     int number = command.ExecuteNonQuery();
                     connection.Close();
                 }
+
+                Initialization();
             }
             catch (SqlException ex)
             {
@@ -408,6 +412,8 @@ namespace Hotel
                     int number = command.ExecuteNonQuery();
                     connection.Close();
                 }
+
+                Initialization();
             }
             catch (SqlException ex)
             {
@@ -450,6 +456,8 @@ namespace Hotel
                     int number = command.ExecuteNonQuery();
                     connection.Close();
                 }
+
+                Initialization();
             }
             catch (SqlException ex)
             {

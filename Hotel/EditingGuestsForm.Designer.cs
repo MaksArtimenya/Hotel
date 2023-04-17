@@ -196,6 +196,7 @@
             textBoxLengthOfStay.Name = "textBoxLengthOfStay";
             textBoxLengthOfStay.Size = new Size(265, 27);
             textBoxLengthOfStay.TabIndex = 4;
+            textBoxLengthOfStay.TextChanged += textBoxLengthOfStay_TextChanged;
             // 
             // textBoxArrivalDate
             // 
@@ -203,6 +204,7 @@
             textBoxArrivalDate.Name = "textBoxArrivalDate";
             textBoxArrivalDate.Size = new Size(265, 27);
             textBoxArrivalDate.TabIndex = 3;
+            textBoxArrivalDate.TextChanged += textBoxArrivalDate_TextChanged;
             // 
             // textBoxPassportID
             // 
@@ -210,6 +212,7 @@
             textBoxPassportID.Name = "textBoxPassportID";
             textBoxPassportID.Size = new Size(265, 27);
             textBoxPassportID.TabIndex = 2;
+            textBoxPassportID.TextChanged += textBoxPassportID_TextChanged;
             // 
             // textBoxGender
             // 
@@ -217,6 +220,7 @@
             textBoxGender.Name = "textBoxGender";
             textBoxGender.Size = new Size(265, 27);
             textBoxGender.TabIndex = 1;
+            textBoxGender.TextChanged += textBoxGender_TextChanged;
             // 
             // textBoxFullName
             // 
@@ -224,6 +228,7 @@
             textBoxFullName.Name = "textBoxFullName";
             textBoxFullName.Size = new Size(265, 27);
             textBoxFullName.TabIndex = 0;
+            textBoxFullName.TextChanged += textBoxFullName_TextChanged;
             // 
             // EditingGuestsForm
             // 

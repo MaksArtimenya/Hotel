@@ -18,10 +18,8 @@ namespace Hotel
         public EditingGuestsForm()
         {
             InitializeComponent();
-            listBoxShowGuests.Items.AddRange(InternalData.Guests.ToArray());
-            listBoxShowAvaibleRooms.Items.AddRange(InternalData.Rooms.ToArray());
-            listBoxShowAvaibleRooms.Items.Insert(0, new Room(-1, -1, -1, -1));
-            listBoxShowAvaibleRooms.SelectedIndex = 0;
+            UpdateListBoxes();
+            buttonSaveNewGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
         }
 
@@ -37,9 +35,18 @@ namespace Hotel
 
                 if (listBoxShowAvaibleRooms.SelectedIndex != 0)
                 {
-                    InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                        ((Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex]).Number));
-                    //TODO change count of free rooms
+                    Room selectedRoom = (Room)listBoxShowAvaibleRooms.SelectedItem;
+                    if (CheckFreePlacesOfRoom(selectedRoom))
+                    {
+                        InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
+                            selectedRoom.Number));
+                        InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
+                            selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Selected room is full");
+                    }
                 }
             }
             else
@@ -53,29 +60,68 @@ namespace Hotel
                 {
                     if (bufIdOfAvaibleRooms != 0)
                     {
-                        RoomAllocation oldRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            ((Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms]).Number);
-                        RoomAllocation newRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            ((Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex]).Number);
-                        InternalData.EditRoomAllocation(oldRoomAllocation, newRoomAllocation);
+                        if (bufIdOfAvaibleRooms != listBoxShowAvaibleRooms.SelectedIndex)
+                        {
+                            Room selectedRoom = (Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex];
+                            Room bufRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
+                            if (CheckFreePlacesOfRoom(selectedRoom))
+                            {
+                                RoomAllocation oldRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
+                                    bufRoom.Number);
+                                RoomAllocation newRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
+                                    selectedRoom.Number);
+                                InternalData.EditRoomAllocation(oldRoomAllocation, newRoomAllocation);
+                                InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
+                                    selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
+                                InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
+                                    bufRoom.OccupiedPlaces - 1, bufRoom.Price));
+                            }
+                            else
+                            {
+                                MessageBox.Show("Selected room is full");
+                            }
+                        }
                     }
                     else
                     {
-                        InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            ((Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex]).Number));
+                        Room selectedRoom = (Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex];
+                        if (CheckFreePlacesOfRoom(selectedRoom))
+                        {
+                            InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
+                                selectedRoom.Number));
+                            InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
+                                selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
+                        }
+                        else
+                        {
+                            MessageBox.Show("Selected room is full");
+                        }
                     }
                 }
                 else
                 {
                     if (bufIdOfAvaibleRooms != 0)
                     {
+                        Room selectedRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
                         InternalData.RemoveRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            ((Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms]).Number));
+                            selectedRoom.Number));
+                        InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
+                            selectedRoom.OccupiedPlaces - 1, selectedRoom.Price));
                     }
                 }
             }
 
             buttonCancel_Click(sender, e);
+        }
+
+        private bool CheckFreePlacesOfRoom(Room room)
+        {
+            if (room.FreePlaces > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void listBoxShowGuests_SelectedIndexChanged(object sender, EventArgs e)
@@ -124,6 +170,9 @@ namespace Hotel
             }
             InternalData.RemoveGuest(guest);
             listBoxShowGuests.Items.Remove(listBoxShowGuests.Items[listBoxShowGuests.SelectedIndex]);
+            Room bufRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
+            InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
+                bufRoom.OccupiedPlaces - 1, bufRoom.Price));
             buttonCancel_Click(sender, e);
         }
 
@@ -134,10 +183,22 @@ namespace Hotel
             textBoxPassportID.Text = string.Empty;
             textBoxArrivalDate.Text = string.Empty;
             textBoxLengthOfStay.Text = string.Empty;
-            listBoxShowGuests.SelectedIndex = -1;
             listBoxShowAvaibleRooms.SelectedIndex = 0;
             buttonRemoveGuest.Enabled = false;
+            buttonSaveNewGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
+            UpdateListBoxes();
+        }
+
+        private void UpdateListBoxes()
+        {
+            listBoxShowGuests.Items.Clear();
+            listBoxShowGuests.Items.AddRange(InternalData.Guests.ToArray());
+            listBoxShowAvaibleRooms.Items.Clear();
+            listBoxShowAvaibleRooms.Items.AddRange(InternalData.Rooms.ToArray());
+            listBoxShowAvaibleRooms.Items.Insert(0, new Room(-1, -1, -1, -1));
+            listBoxShowAvaibleRooms.SelectedIndex = 0;
+            listBoxShowGuests.SelectedIndex = -1;
         }
 
         private void buttonRoomInfo_Click(object sender, EventArgs e)
@@ -161,5 +222,46 @@ namespace Hotel
                 buttonRoomInfo.Enabled = true;
             }
         }
+
+        private void CheckTextBoxes()
+        {
+            if (textBoxFullName.Text != string.Empty && textBoxGender.Text != string.Empty && 
+                textBoxPassportID.Text != string.Empty && textBoxArrivalDate.Text != string.Empty && 
+                textBoxLengthOfStay.Text != string.Empty) 
+            {
+                buttonSaveNewGuest.Enabled = true;
+            }
+            else
+            {
+                buttonSaveNewGuest.Enabled = false;
+            }
+        }
+
+        private void textBoxFullName_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+        private void textBoxGender_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+        private void textBoxPassportID_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+        private void textBoxArrivalDate_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+        private void textBoxLengthOfStay_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+
     }
 }

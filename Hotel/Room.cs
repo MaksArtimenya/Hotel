@@ -29,12 +29,35 @@ namespace Hotel
         {
             if (Number != -1)
             {
-                return Number + $" ({FreePlaces}/{NumberOfPlaces})";
+                return Number + $" (Free {FreePlaces} of {NumberOfPlaces})";
             }
             else
             {
                 return "-";
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null || obj.GetType() != typeof(Room))
+            {
+                return false;
+            }
+            else
+            {
+                if (((Room)obj).Number == Number && ((Room)obj).NumberOfPlaces == NumberOfPlaces &&
+                    ((Room)obj).OccupiedPlaces == OccupiedPlaces && ((Room)obj).Price == Price)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
