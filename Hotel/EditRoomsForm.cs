@@ -50,6 +50,7 @@ namespace Hotel
             textBoxPrice.Text = string.Empty;
             buttonRemoveRoom.Enabled = false;
             buttonGuestInfo.Enabled = false;
+            buttonSaveRoom.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
             label4.Text = string.Format(nameOfLabel, "-", "-");
             listBoxShowPlacesOfRoom.Items.Clear();
@@ -87,16 +88,7 @@ namespace Hotel
 
         private void textBoxNumberOfPlaces_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                label4.Text = string.Format(nameOfLabel, 0, int.Parse(textBoxNumberOfPlaces.Text));
-                textBoxNumberOfPlaces.ForeColor = Color.Black;
-            }
-            catch (FormatException)
-            {
-                textBoxNumberOfPlaces.ForeColor = Color.Red;
-                label4.Text = string.Format(nameOfLabel, "-", "-");
-            }
+            CheckTextBoxes();
         }
 
         private void listBoxShowPlacesOfRoom_SelectedIndexChanged(object sender, EventArgs e)
@@ -115,6 +107,63 @@ namespace Hotel
                 $"\nPassport ID: {guest.PassportID}" +
                 $"\nArrival date: {guest.ArrivalDate}" +
                 $"\nLength of stay: {guest.LengthOfStay}");
+        }
+
+        private void CheckTextBoxes()
+        {
+            bool check = true;
+            try
+            {
+                int.Parse(textBoxNumber.Text);
+                textBoxNumber.ForeColor = Color.Black;
+            }
+            catch (Exception)
+            {
+                textBoxNumber.ForeColor = Color.Red;
+                check = false;
+            }
+
+            try
+            {
+                label4.Text = string.Format(nameOfLabel, 0, int.Parse(textBoxNumberOfPlaces.Text));
+                textBoxNumberOfPlaces.ForeColor = Color.Black;
+            }
+            catch (Exception)
+            {
+                textBoxNumberOfPlaces.ForeColor = Color.Red;
+                check = false;
+                label4.Text = string.Format(nameOfLabel, "-", "-");
+            }
+
+            try
+            {
+                int.Parse(textBoxPrice.Text);
+                textBoxPrice.ForeColor = Color.Black;
+            }
+            catch (Exception)
+            {
+                textBoxPrice.ForeColor = Color.Red;
+                check = false;
+            }
+
+            if (check)
+            {
+                buttonSaveRoom.Enabled = true;
+            }
+            else
+            {
+                buttonSaveRoom.Enabled = false;
+            }
+        }
+
+        private void textBoxNumber_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
+        }
+
+        private void textBoxPrice_TextChanged(object sender, EventArgs e)
+        {
+            CheckTextBoxes();
         }
     }
 }

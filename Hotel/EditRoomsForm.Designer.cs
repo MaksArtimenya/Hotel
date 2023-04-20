@@ -135,6 +135,7 @@
             // 
             // buttonSaveRoom
             // 
+            buttonSaveRoom.Enabled = false;
             buttonSaveRoom.Location = new Point(41, 336);
             buttonSaveRoom.Name = "buttonSaveRoom";
             buttonSaveRoom.Size = new Size(241, 29);
@@ -170,6 +171,7 @@
             textBoxPrice.Name = "textBoxPrice";
             textBoxPrice.Size = new Size(241, 27);
             textBoxPrice.TabIndex = 4;
+            textBoxPrice.TextChanged += textBoxPrice_TextChanged;
             // 
             // textBoxNumberOfPlaces
             // 
@@ -185,6 +187,7 @@
             textBoxNumber.Name = "textBoxNumber";
             textBoxNumber.Size = new Size(241, 27);
             textBoxNumber.TabIndex = 0;
+            textBoxNumber.TextChanged += textBoxNumber_TextChanged;
             // 
             // EditRoomsForm
             // 
