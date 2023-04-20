@@ -37,11 +37,9 @@
             buttonToEditingGuests = new Button();
             buttonToEditingRooms = new Button();
             groupBox1 = new GroupBox();
-            label1 = new Label();
             buttonSearch = new Button();
             buttonClearSearch = new Button();
             textBoxDesiredObject = new TextBox();
-            comboBoxSearchBy = new ComboBox();
             radioButtonGuest = new RadioButton();
             radioButtonRoom = new RadioButton();
             dataGridViewShowGuests = new DataGridView();
@@ -127,61 +125,44 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(buttonSearch);
             groupBox1.Controls.Add(buttonClearSearch);
             groupBox1.Controls.Add(textBoxDesiredObject);
-            groupBox1.Controls.Add(comboBoxSearchBy);
             groupBox1.Controls.Add(radioButtonGuest);
             groupBox1.Controls.Add(radioButtonRoom);
             groupBox1.Location = new Point(25, 45);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(284, 355);
+            groupBox1.Size = new Size(284, 263);
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
             groupBox1.Text = "Search";
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(26, 139);
-            label1.Name = "label1";
-            label1.Size = new Size(73, 20);
-            label1.TabIndex = 6;
-            label1.Text = "Search by";
-            // 
             // buttonSearch
             // 
-            buttonSearch.Location = new Point(143, 284);
+            buttonSearch.Location = new Point(143, 206);
             buttonSearch.Name = "buttonSearch";
             buttonSearch.Size = new Size(102, 29);
             buttonSearch.TabIndex = 5;
             buttonSearch.Text = "Search";
             buttonSearch.UseVisualStyleBackColor = true;
+            buttonSearch.Click += buttonSearch_Click;
             // 
             // buttonClearSearch
             // 
-            buttonClearSearch.Location = new Point(26, 284);
+            buttonClearSearch.Location = new Point(26, 206);
             buttonClearSearch.Name = "buttonClearSearch";
             buttonClearSearch.Size = new Size(102, 29);
             buttonClearSearch.TabIndex = 4;
             buttonClearSearch.Text = "Clear";
             buttonClearSearch.UseVisualStyleBackColor = true;
+            buttonClearSearch.Click += buttonClearSearch_Click;
             // 
             // textBoxDesiredObject
             // 
-            textBoxDesiredObject.Location = new Point(26, 227);
+            textBoxDesiredObject.Location = new Point(26, 148);
             textBoxDesiredObject.Name = "textBoxDesiredObject";
             textBoxDesiredObject.Size = new Size(219, 27);
             textBoxDesiredObject.TabIndex = 3;
-            // 
-            // comboBoxSearchBy
-            // 
-            comboBoxSearchBy.FormattingEnabled = true;
-            comboBoxSearchBy.Location = new Point(26, 162);
-            comboBoxSearchBy.Name = "comboBoxSearchBy";
-            comboBoxSearchBy.Size = new Size(219, 28);
-            comboBoxSearchBy.TabIndex = 2;
             // 
             // radioButtonGuest
             // 
@@ -290,8 +271,6 @@
         private Button buttonSearch;
         private Button buttonClearSearch;
         private TextBox textBoxDesiredObject;
-        private ComboBox comboBoxSearchBy;
-        private Label label1;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column3;
