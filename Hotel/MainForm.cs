@@ -47,6 +47,8 @@ namespace Hotel
 
         private void buttonSearch_Click(object sender, EventArgs e)
         {
+            dataGridViewShowRooms.Rows.Clear();
+            dataGridViewShowGuests.Rows.Clear();
             string desired = textBoxDesiredObject.Text.Trim();
             if (radioButtonRoom.Checked)
             {

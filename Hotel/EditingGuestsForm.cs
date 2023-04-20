@@ -12,7 +12,7 @@ namespace Hotel
 {
     public partial class EditingGuestsForm : Form
     {
-        private string[] namesOfGroupBox = new string[] { "New guest", "Editing guest" };
+        private string[] namesOfGroupBox = new string[] { "Новый постоялец", "Редактирование постояльца" };
         private int bufIdOfAvaibleRooms = 0;
 
         public EditingGuestsForm()
@@ -45,7 +45,7 @@ namespace Hotel
                     }
                     else
                     {
-                        MessageBox.Show("Selected room is full");
+                        MessageBox.Show("Выбранная комната заполнена");
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace Hotel
                             }
                             else
                             {
-                                MessageBox.Show("Selected room is full");
+                                MessageBox.Show("Выбранная комната заполнена");
                             }
                         }
                     }
@@ -94,7 +94,7 @@ namespace Hotel
                         }
                         else
                         {
-                            MessageBox.Show("Selected room is full");
+                            MessageBox.Show("Выбранная комната заполнена");
                         }
                     }
                 }
@@ -204,11 +204,11 @@ namespace Hotel
         private void buttonRoomInfo_Click(object sender, EventArgs e)
         {
             Room room = (Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex];
-            MessageBox.Show($"Room:" + $"\nNumber: {room.Number}" +
-                $"\nNumber of places: {room.NumberOfPlaces}" +
-                $"\nOccupied places: {room.OccupiedPlaces}" +
-                $"\nFree places: {room.FreePlaces}" +
-                $"\nPrice: {room.Price}");
+            MessageBox.Show($"Комната:" + $"\nНомер: {room.Number}" +
+                $"\nКол-во мест: {room.NumberOfPlaces}" +
+                $"\nЗанятые места: {room.OccupiedPlaces}" +
+                $"\nСвободные места: {room.FreePlaces}" +
+                $"\nЦена: {room.Price}");
         }
 
         private void listBoxShowAvaibleRooms_SelectedIndexChanged(object sender, EventArgs e)
@@ -225,9 +225,9 @@ namespace Hotel
 
         private void CheckTextBoxes()
         {
-            if (textBoxFullName.Text != string.Empty && textBoxGender.Text != string.Empty && 
-                textBoxPassportID.Text != string.Empty && textBoxArrivalDate.Text != string.Empty && 
-                textBoxLengthOfStay.Text != string.Empty) 
+            if (textBoxFullName.Text != string.Empty && textBoxGender.Text != string.Empty &&
+                textBoxPassportID.Text != string.Empty && textBoxArrivalDate.Text != string.Empty &&
+                textBoxLengthOfStay.Text != string.Empty)
             {
                 buttonSaveNewGuest.Enabled = true;
             }

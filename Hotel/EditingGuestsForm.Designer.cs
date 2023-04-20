@@ -91,7 +91,7 @@
             buttonRoomInfo.Name = "buttonRoomInfo";
             buttonRoomInfo.Size = new Size(244, 29);
             buttonRoomInfo.TabIndex = 15;
-            buttonRoomInfo.Text = "Info";
+            buttonRoomInfo.Text = "Информация о комнате";
             buttonRoomInfo.UseVisualStyleBackColor = true;
             buttonRoomInfo.Click += buttonRoomInfo_Click;
             // 
@@ -100,54 +100,54 @@
             label6.AutoSize = true;
             label6.Location = new Point(342, 33);
             label6.Name = "label6";
-            label6.Size = new Size(105, 20);
+            label6.Size = new Size(150, 20);
             label6.TabIndex = 14;
-            label6.Text = "Avaible rooms";
+            label6.Text = "Доступные комнаты";
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.Location = new Point(29, 285);
             label5.Name = "label5";
-            label5.Size = new Size(102, 20);
+            label5.Size = new Size(244, 20);
             label5.TabIndex = 13;
-            label5.Text = "Length of stay";
+            label5.Text = "Продолжительность пребывания";
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.Location = new Point(29, 222);
             label4.Name = "label4";
-            label4.Size = new Size(86, 20);
+            label4.Size = new Size(115, 20);
             label4.TabIndex = 12;
-            label4.Text = "Arrival date";
+            label4.Text = "Дата прибытия";
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Location = new Point(29, 159);
             label3.Name = "label3";
-            label3.Size = new Size(83, 20);
+            label3.Size = new Size(153, 20);
             label3.TabIndex = 11;
-            label3.Text = "Passport ID";
+            label3.Text = "Паспортные данные";
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Location = new Point(29, 96);
             label2.Name = "label2";
-            label2.Size = new Size(57, 20);
+            label2.Size = new Size(37, 20);
             label2.TabIndex = 10;
-            label2.Text = "Gender";
+            label2.Text = "Пол";
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new Point(29, 33);
             label1.Name = "label1";
-            label1.Size = new Size(73, 20);
+            label1.Size = new Size(42, 20);
             label1.TabIndex = 9;
-            label1.Text = "Full name";
+            label1.Text = "ФИО";
             // 
             // buttonCancel
             // 
@@ -155,7 +155,7 @@
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(265, 29);
             buttonCancel.TabIndex = 8;
-            buttonCancel.Text = "Cancel";
+            buttonCancel.Text = "Закрыть";
             buttonCancel.UseVisualStyleBackColor = true;
             buttonCancel.Click += buttonCancel_Click;
             // 
@@ -166,7 +166,7 @@
             buttonRemoveGuest.Name = "buttonRemoveGuest";
             buttonRemoveGuest.Size = new Size(265, 29);
             buttonRemoveGuest.TabIndex = 7;
-            buttonRemoveGuest.Text = "Remove";
+            buttonRemoveGuest.Text = "Удалить";
             buttonRemoveGuest.UseVisualStyleBackColor = true;
             buttonRemoveGuest.Click += buttonRemoveGuest_Click;
             // 
@@ -176,7 +176,7 @@
             buttonSaveNewGuest.Name = "buttonSaveNewGuest";
             buttonSaveNewGuest.Size = new Size(265, 29);
             buttonSaveNewGuest.TabIndex = 6;
-            buttonSaveNewGuest.Text = "Save guest";
+            buttonSaveNewGuest.Text = "Сохранить";
             buttonSaveNewGuest.UseVisualStyleBackColor = true;
             buttonSaveNewGuest.Click += buttonSaveNewGuest_Click;
             // 
@@ -237,8 +237,11 @@
             ClientSize = new Size(982, 553);
             Controls.Add(groupBox1);
             Controls.Add(listBoxShowGuests);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "EditingGuestsForm";
-            Text = "EditingGuestsForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Постояльцы";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);

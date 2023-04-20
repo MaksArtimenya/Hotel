@@ -12,8 +12,8 @@ namespace Hotel
 {
     public partial class EditRoomsForm : Form
     {
-        private string[] namesOfGroupBox = new string[] { "New room", "Editing room" };
-        private string nameOfLabel = "Occupied places: {0}/{1}";
+        private string[] namesOfGroupBox = new string[] { "Новая комната", "Редактирование комнаты" };
+        private string nameOfLabel = "Занятые места: {0}/{1}";
 
         public EditRoomsForm()
         {
@@ -102,11 +102,11 @@ namespace Hotel
         private void buttonGuestInfo_Click(object sender, EventArgs e)
         {
             Guest guest = (Guest)listBoxShowPlacesOfRoom.SelectedItem;
-            MessageBox.Show($"Guest:" + $"\nFull name: {guest.FullName}" +
-                $"\nGender: {guest.Gender}" +
-                $"\nPassport ID: {guest.PassportID}" +
-                $"\nArrival date: {guest.ArrivalDate}" +
-                $"\nLength of stay: {guest.LengthOfStay}");
+            MessageBox.Show($"Постоялец:" + $"\nФИО: {guest.FullName}" +
+                $"\nПол: {guest.Gender}" +
+                $"\nПаспортные данные: {guest.PassportID}" +
+                $"\nДата прибытия: {guest.ArrivalDate}" +
+                $"\nПродолжительность пребывания: {guest.LengthOfStay}");
         }
 
         private void CheckTextBoxes()

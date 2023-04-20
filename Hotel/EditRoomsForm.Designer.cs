@@ -90,27 +90,27 @@
             label3.AutoSize = true;
             label3.Location = new Point(41, 163);
             label3.Name = "label3";
-            label3.Size = new Size(41, 20);
+            label3.Size = new Size(45, 20);
             label3.TabIndex = 12;
-            label3.Text = "Price";
+            label3.Text = "Цена";
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Location = new Point(41, 100);
             label2.Name = "label2";
-            label2.Size = new Size(127, 20);
+            label2.Size = new Size(94, 20);
             label2.TabIndex = 11;
-            label2.Text = "Number of places";
+            label2.Text = "Кол-во мест";
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new Point(41, 29);
             label1.Name = "label1";
-            label1.Size = new Size(63, 20);
+            label1.Size = new Size(57, 20);
             label1.TabIndex = 10;
-            label1.Text = "Number";
+            label1.Text = "Номер";
             // 
             // buttonGuestInfo
             // 
@@ -119,7 +119,7 @@
             buttonGuestInfo.Name = "buttonGuestInfo";
             buttonGuestInfo.Size = new Size(231, 29);
             buttonGuestInfo.TabIndex = 9;
-            buttonGuestInfo.Text = "Info";
+            buttonGuestInfo.Text = "Информация о постояльце";
             buttonGuestInfo.UseVisualStyleBackColor = true;
             buttonGuestInfo.Click += buttonGuestInfo_Click;
             // 
@@ -129,7 +129,7 @@
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(241, 29);
             buttonCancel.TabIndex = 8;
-            buttonCancel.Text = "Cancel";
+            buttonCancel.Text = "Закрыть";
             buttonCancel.UseVisualStyleBackColor = true;
             buttonCancel.Click += buttonCancel_Click;
             // 
@@ -140,7 +140,7 @@
             buttonSaveRoom.Name = "buttonSaveRoom";
             buttonSaveRoom.Size = new Size(241, 29);
             buttonSaveRoom.TabIndex = 7;
-            buttonSaveRoom.Text = "Save room";
+            buttonSaveRoom.Text = "Сохранить";
             buttonSaveRoom.UseVisualStyleBackColor = true;
             buttonSaveRoom.Click += buttonSaveRoom_Click;
             // 
@@ -151,7 +151,7 @@
             buttonRemoveRoom.Name = "buttonRemoveRoom";
             buttonRemoveRoom.Size = new Size(241, 29);
             buttonRemoveRoom.TabIndex = 6;
-            buttonRemoveRoom.Text = "Remove";
+            buttonRemoveRoom.Text = "Удалить";
             buttonRemoveRoom.UseVisualStyleBackColor = true;
             buttonRemoveRoom.Click += buttonRemoveRoom_Click;
             // 
@@ -196,8 +196,11 @@
             ClientSize = new Size(982, 553);
             Controls.Add(groupBox1);
             Controls.Add(listBoxShowRooms);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "EditRoomsForm";
-            Text = "EditRoomsForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Комнаты";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);

@@ -70,35 +70,35 @@
             // 
             // Column1
             // 
-            Column1.HeaderText = "Number";
+            Column1.HeaderText = "Номер";
             Column1.MinimumWidth = 6;
             Column1.Name = "Column1";
             Column1.ReadOnly = true;
             // 
             // Column2
             // 
-            Column2.HeaderText = "Number of places";
+            Column2.HeaderText = "Кол-во мест";
             Column2.MinimumWidth = 6;
             Column2.Name = "Column2";
             Column2.ReadOnly = true;
             // 
             // Column3
             // 
-            Column3.HeaderText = "Occupied places";
+            Column3.HeaderText = "Занятые места";
             Column3.MinimumWidth = 6;
             Column3.Name = "Column3";
             Column3.ReadOnly = true;
             // 
             // Column5
             // 
-            Column5.HeaderText = "Free places";
+            Column5.HeaderText = "Свободные места";
             Column5.MinimumWidth = 6;
             Column5.Name = "Column5";
             Column5.ReadOnly = true;
             // 
             // Column4
             // 
-            Column4.HeaderText = "Price";
+            Column4.HeaderText = "Цена";
             Column4.MinimumWidth = 6;
             Column4.Name = "Column4";
             Column4.ReadOnly = true;
@@ -109,7 +109,7 @@
             buttonToEditingGuests.Name = "buttonToEditingGuests";
             buttonToEditingGuests.Size = new Size(265, 52);
             buttonToEditingGuests.TabIndex = 1;
-            buttonToEditingGuests.Text = "Edit guests";
+            buttonToEditingGuests.Text = "Список постояльцев";
             buttonToEditingGuests.UseVisualStyleBackColor = true;
             buttonToEditingGuests.Click += buttonToEditingGuests_Click;
             // 
@@ -119,7 +119,7 @@
             buttonToEditingRooms.Name = "buttonToEditingRooms";
             buttonToEditingRooms.Size = new Size(265, 52);
             buttonToEditingRooms.TabIndex = 2;
-            buttonToEditingRooms.Text = "Edit rooms";
+            buttonToEditingRooms.Text = "Список комнат";
             buttonToEditingRooms.UseVisualStyleBackColor = true;
             buttonToEditingRooms.Click += buttonToEditingRooms_Click;
             // 
@@ -135,7 +135,7 @@
             groupBox1.Size = new Size(284, 263);
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Search";
+            groupBox1.Text = "Поиск";
             // 
             // buttonSearch
             // 
@@ -143,7 +143,7 @@
             buttonSearch.Name = "buttonSearch";
             buttonSearch.Size = new Size(102, 29);
             buttonSearch.TabIndex = 5;
-            buttonSearch.Text = "Search";
+            buttonSearch.Text = "Поиск";
             buttonSearch.UseVisualStyleBackColor = true;
             buttonSearch.Click += buttonSearch_Click;
             // 
@@ -153,7 +153,7 @@
             buttonClearSearch.Name = "buttonClearSearch";
             buttonClearSearch.Size = new Size(102, 29);
             buttonClearSearch.TabIndex = 4;
-            buttonClearSearch.Text = "Clear";
+            buttonClearSearch.Text = "Очистить";
             buttonClearSearch.UseVisualStyleBackColor = true;
             buttonClearSearch.Click += buttonClearSearch_Click;
             // 
@@ -169,10 +169,10 @@
             radioButtonGuest.AutoSize = true;
             radioButtonGuest.Location = new Point(26, 85);
             radioButtonGuest.Name = "radioButtonGuest";
-            radioButtonGuest.Size = new Size(67, 24);
+            radioButtonGuest.Size = new Size(116, 24);
             radioButtonGuest.TabIndex = 1;
             radioButtonGuest.TabStop = true;
-            radioButtonGuest.Text = "Guest";
+            radioButtonGuest.Text = "Постояльцы";
             radioButtonGuest.UseVisualStyleBackColor = true;
             radioButtonGuest.CheckedChanged += radioButtonGuest_CheckedChanged;
             // 
@@ -182,10 +182,10 @@
             radioButtonRoom.Checked = true;
             radioButtonRoom.Location = new Point(26, 55);
             radioButtonRoom.Name = "radioButtonRoom";
-            radioButtonRoom.Size = new Size(70, 24);
+            radioButtonRoom.Size = new Size(93, 24);
             radioButtonRoom.TabIndex = 0;
             radioButtonRoom.TabStop = true;
-            radioButtonRoom.Text = "Room";
+            radioButtonRoom.Text = "Комнаты";
             radioButtonRoom.UseVisualStyleBackColor = true;
             radioButtonRoom.CheckedChanged += radioButtonRoom_CheckedChanged;
             // 
@@ -208,35 +208,36 @@
             // 
             // Column6
             // 
-            Column6.HeaderText = "Full name";
+            Column6.HeaderText = "ФИО";
             Column6.MinimumWidth = 6;
             Column6.Name = "Column6";
             Column6.ReadOnly = true;
             // 
             // Column7
             // 
-            Column7.HeaderText = "Gender";
+            Column7.HeaderText = "Пол";
             Column7.MinimumWidth = 6;
             Column7.Name = "Column7";
             Column7.ReadOnly = true;
             // 
             // Column8
             // 
-            Column8.HeaderText = "Passport ID";
+            Column8.HeaderText = "Паспортные данные";
             Column8.MinimumWidth = 6;
             Column8.Name = "Column8";
             Column8.ReadOnly = true;
             // 
             // Column9
             // 
-            Column9.HeaderText = "Arrival date";
+            Column9.HeaderText = "Дата прибытия";
             Column9.MinimumWidth = 6;
             Column9.Name = "Column9";
             Column9.ReadOnly = true;
             // 
             // Column10
             // 
-            Column10.HeaderText = "Length of stay";
+            Column10.FillWeight = 160F;
+            Column10.HeaderText = "Продолжительность пребывания";
             Column10.MinimumWidth = 6;
             Column10.Name = "Column10";
             Column10.ReadOnly = true;
@@ -251,8 +252,11 @@
             Controls.Add(buttonToEditingRooms);
             Controls.Add(buttonToEditingGuests);
             Controls.Add(dataGridViewShowRooms);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "MainForm";
-            Text = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Гостиница";
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
@@ -271,16 +275,16 @@
         private Button buttonSearch;
         private Button buttonClearSearch;
         private TextBox textBoxDesiredObject;
-        private DataGridViewTextBoxColumn Column1;
-        private DataGridViewTextBoxColumn Column2;
-        private DataGridViewTextBoxColumn Column3;
-        private DataGridViewTextBoxColumn Column5;
-        private DataGridViewTextBoxColumn Column4;
         private DataGridView dataGridViewShowGuests;
         private DataGridViewTextBoxColumn Column6;
         private DataGridViewTextBoxColumn Column7;
         private DataGridViewTextBoxColumn Column8;
         private DataGridViewTextBoxColumn Column9;
         private DataGridViewTextBoxColumn Column10;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column3;
+        private DataGridViewTextBoxColumn Column5;
+        private DataGridViewTextBoxColumn Column4;
     }
 }

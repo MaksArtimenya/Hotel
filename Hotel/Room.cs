@@ -29,7 +29,7 @@ namespace Hotel
         {
             if (Number != -1)
             {
-                return Number + $" (Free {FreePlaces} of {NumberOfPlaces})";
+                return Number + $" (Свободно: {FreePlaces} из {NumberOfPlaces})";
             }
             else
             {
