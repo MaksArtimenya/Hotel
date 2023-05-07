@@ -8,6 +8,22 @@ namespace Hotel
         {
             InitializeComponent();
             ChangeLabelWelcomeText();
+            CheckingTypeOfUser();
+        }
+
+        private void CheckingTypeOfUser()
+        {
+            switch (InternalData.User.TypeOfUser)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    buttonToEditingGuests.Enabled = false;
+                    radioButtonGuest.Enabled = false;
+                    break;
+            }
         }
 
         private void ChangeLabelWelcomeText()
@@ -119,25 +135,30 @@ namespace Hotel
                         found = true;
                     }
 
-                    if (InternalData.Guests[i].PassportID.Trim() == desired)
+                    if (InternalData.Guests[i].PassportID.Trim() == desired && InternalData.User.TypeOfUser == 0)
                     {
                         found = true;
                     }
 
-                    if (InternalData.Guests[i].ArrivalDate.Trim() == desired)
+                    if (InternalData.Guests[i].ArrivalDate.Trim() == desired && InternalData.User.TypeOfUser == 0)
                     {
                         found = true;
                     }
 
-                    if (InternalData.Guests[i].LengthOfStay.Trim() == desired)
+                    if (InternalData.Guests[i].LengthOfStay.Trim() == desired && InternalData.User.TypeOfUser == 0)
                     {
                         found = true;
                     }
 
-                    if (found)
+                    if (found && InternalData.User.TypeOfUser == 0)
                     {
                         dataGridViewShowGuests.Rows.Add(InternalData.Guests[i].FullName, InternalData.Guests[i].Gender,
                             InternalData.Guests[i].PassportID, InternalData.Guests[i].ArrivalDate, InternalData.Guests[i].LengthOfStay);
+                    }
+                    else if (found)
+                    {
+                        dataGridViewShowGuests.Rows.Add(InternalData.Guests[i].FullName, InternalData.Guests[i].Gender,
+                            "*****", "*****", "*****");
                     }
                 }
             }

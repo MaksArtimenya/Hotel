@@ -18,9 +18,20 @@ namespace Hotel
         public EditRoomsForm()
         {
             InitializeComponent();
+            CheckingTypeOfUser();
             listBoxShowRooms.Items.AddRange(InternalData.Rooms.ToArray());
             groupBox1.Text = namesOfGroupBox[0];
             label4.Text = string.Format(nameOfLabel, "-", "-");
+        }
+
+        private void CheckingTypeOfUser()
+        {
+            if (InternalData.User.TypeOfUser != 0)
+            {
+                textBoxNumber.ReadOnly = true;
+                textBoxNumberOfPlaces.ReadOnly = true;
+                textBoxPrice.ReadOnly = true;
+            }
         }
 
         private void buttonSaveRoom_Click(object sender, EventArgs e)
@@ -64,14 +75,21 @@ namespace Hotel
                 textBoxNumber.Text = room.Number.ToString();
                 textBoxNumberOfPlaces.Text = room.NumberOfPlaces.ToString();
                 textBoxPrice.Text = room.Price.ToString();
-                buttonRemoveRoom.Enabled = true;
+                if (InternalData.User.TypeOfUser == 0)
+                {
+                    buttonRemoveRoom.Enabled = true;
+                }
+                
                 groupBox1.Text = namesOfGroupBox[1];
                 label4.Text = string.Format(nameOfLabel, room.OccupiedPlaces, room.NumberOfPlaces);
-                List<Guest> guests = InternalData.GetGuestsByRoom(room);
-                listBoxShowPlacesOfRoom.Items.Clear();
-                if (guests.Count > 0)
+                if (InternalData.User.TypeOfUser == 0 || InternalData.User.TypeOfUser == 1)
                 {
-                    listBoxShowPlacesOfRoom.Items.AddRange(guests.ToArray());
+                    List<Guest> guests = InternalData.GetGuestsByRoom(room);
+                    listBoxShowPlacesOfRoom.Items.Clear();
+                    if (guests.Count > 0)
+                    {
+                        listBoxShowPlacesOfRoom.Items.AddRange(guests.ToArray());
+                    }
                 }
             }
         }
@@ -102,11 +120,22 @@ namespace Hotel
         private void buttonGuestInfo_Click(object sender, EventArgs e)
         {
             Guest guest = (Guest)listBoxShowPlacesOfRoom.SelectedItem;
-            MessageBox.Show($"Постоялец:" + $"\nФИО: {guest.FullName}" +
-                $"\nПол: {guest.Gender}" +
-                $"\nПаспортные данные: {guest.PassportID}" +
-                $"\nДата прибытия: {guest.ArrivalDate}" +
-                $"\nПродолжительность пребывания: {guest.LengthOfStay}");
+            if (InternalData.User.TypeOfUser == 0)
+            {
+                MessageBox.Show($"Постоялец:" + $"\nФИО: {guest.FullName}" +
+                    $"\nПол: {guest.Gender}" +
+                    $"\nПаспортные данные: {guest.PassportID}" +
+                    $"\nДата прибытия: {guest.ArrivalDate}" +
+                    $"\nПродолжительность пребывания: {guest.LengthOfStay}");
+            }
+            else
+            {
+                MessageBox.Show($"Постоялец:" + $"\nФИО: {guest.FullName}" +
+                    $"\nПол: {guest.Gender}" +
+                    $"\nПаспортные данные: *****" +
+                    $"\nДата прибытия: *****" +
+                    $"\nПродолжительность пребывания: *****");
+            }
         }
 
         private void CheckTextBoxes()
@@ -146,7 +175,7 @@ namespace Hotel
                 check = false;
             }
 
-            if (check)
+            if (check && InternalData.User.TypeOfUser == 0)
             {
                 buttonSaveRoom.Enabled = true;
             }

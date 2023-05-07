@@ -19,8 +19,24 @@ namespace Hotel
         {
             InitializeComponent();
             UpdateListBoxes();
+            CheckingTypeOfUser();
             buttonSaveNewGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
+        }
+
+        private void CheckingTypeOfUser()
+        {
+            if (InternalData.User.TypeOfUser != 0)
+            {
+                textBoxFullName.ReadOnly = true;
+                textBoxGender.ReadOnly = true;
+                textBoxPassportID.ReadOnly = true;
+                textBoxPassportID.UseSystemPasswordChar = true;
+                textBoxArrivalDate.ReadOnly = true;
+                textBoxArrivalDate.UseSystemPasswordChar = true;
+                textBoxLengthOfStay.ReadOnly = true;
+                textBoxLengthOfStay.UseSystemPasswordChar = true;
+            }
         }
 
         private void buttonSaveNewGuest_Click(object sender, EventArgs e)
@@ -129,7 +145,11 @@ namespace Hotel
             if (listBoxShowGuests.SelectedIndex != -1)
             {
                 groupBox1.Text = namesOfGroupBox[1];
-                buttonRemoveGuest.Enabled = true;
+                if (InternalData.User.TypeOfUser == 0)
+                {
+                    buttonRemoveGuest.Enabled = true;
+                }
+                
                 Guest selectedGuest = (Guest)listBoxShowGuests.Items[listBoxShowGuests.SelectedIndex];
                 textBoxFullName.Text = selectedGuest.FullName;
                 textBoxGender.Text = selectedGuest.Gender;
@@ -227,7 +247,7 @@ namespace Hotel
         {
             if (textBoxFullName.Text != string.Empty && textBoxGender.Text != string.Empty &&
                 textBoxPassportID.Text != string.Empty && textBoxArrivalDate.Text != string.Empty &&
-                textBoxLengthOfStay.Text != string.Empty)
+                textBoxLengthOfStay.Text != string.Empty && InternalData.User.TypeOfUser == 0)
             {
                 buttonSaveNewGuest.Enabled = true;
             }
