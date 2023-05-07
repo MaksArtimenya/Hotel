@@ -48,6 +48,7 @@
             Column8 = new DataGridViewTextBoxColumn();
             Column9 = new DataGridViewTextBoxColumn();
             Column10 = new DataGridViewTextBoxColumn();
+            labelWelcome = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowGuests).BeginInit();
@@ -60,12 +61,12 @@
             dataGridViewShowRooms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewShowRooms.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewShowRooms.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column5, Column4 });
-            dataGridViewShowRooms.Location = new Point(336, 45);
+            dataGridViewShowRooms.Location = new Point(336, 91);
             dataGridViewShowRooms.Name = "dataGridViewShowRooms";
             dataGridViewShowRooms.ReadOnly = true;
             dataGridViewShowRooms.RowHeadersWidth = 51;
             dataGridViewShowRooms.RowTemplate.Height = 29;
-            dataGridViewShowRooms.Size = new Size(607, 355);
+            dataGridViewShowRooms.Size = new Size(607, 309);
             dataGridViewShowRooms.TabIndex = 0;
             // 
             // Column1
@@ -130,7 +131,7 @@
             groupBox1.Controls.Add(textBoxDesiredObject);
             groupBox1.Controls.Add(radioButtonGuest);
             groupBox1.Controls.Add(radioButtonRoom);
-            groupBox1.Location = new Point(25, 45);
+            groupBox1.Location = new Point(25, 91);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(284, 263);
             groupBox1.TabIndex = 3;
@@ -197,12 +198,12 @@
             dataGridViewShowGuests.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewShowGuests.Columns.AddRange(new DataGridViewColumn[] { Column6, Column7, Column8, Column9, Column10 });
             dataGridViewShowGuests.Enabled = false;
-            dataGridViewShowGuests.Location = new Point(336, 45);
+            dataGridViewShowGuests.Location = new Point(336, 91);
             dataGridViewShowGuests.Name = "dataGridViewShowGuests";
             dataGridViewShowGuests.ReadOnly = true;
             dataGridViewShowGuests.RowHeadersWidth = 51;
             dataGridViewShowGuests.RowTemplate.Height = 29;
-            dataGridViewShowGuests.Size = new Size(607, 355);
+            dataGridViewShowGuests.Size = new Size(607, 309);
             dataGridViewShowGuests.TabIndex = 4;
             dataGridViewShowGuests.Visible = false;
             // 
@@ -242,11 +243,22 @@
             Column10.Name = "Column10";
             Column10.ReadOnly = true;
             // 
+            // labelWelcome
+            // 
+            labelWelcome.AutoSize = true;
+            labelWelcome.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            labelWelcome.Location = new Point(274, 28);
+            labelWelcome.Name = "labelWelcome";
+            labelWelcome.Size = new Size(194, 32);
+            labelWelcome.TabIndex = 5;
+            labelWelcome.Text = "Вы вошли как: ()";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 553);
+            Controls.Add(labelWelcome);
             Controls.Add(dataGridViewShowGuests);
             Controls.Add(groupBox1);
             Controls.Add(buttonToEditingRooms);
@@ -262,6 +274,7 @@
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowGuests).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -286,5 +299,6 @@
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column5;
         private DataGridViewTextBoxColumn Column4;
+        private Label labelWelcome;
     }
 }

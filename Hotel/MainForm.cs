@@ -7,6 +7,23 @@ namespace Hotel
         public MainForm()
         {
             InitializeComponent();
+            ChangeLabelWelcomeText();
+        }
+
+        private void ChangeLabelWelcomeText()
+        {
+            switch (InternalData.User.TypeOfUser)
+            {
+                case 0:
+                    labelWelcome.Text = $"Вы вошли как: {InternalData.User.Name.Trim()} (Администратор)";
+                    break;
+                case 1:
+                    labelWelcome.Text = $"Вы вошли как: {InternalData.User.Name.Trim()} (Постоялец)";
+                    break;
+                case 2:
+                    labelWelcome.Text = $"Вы вошли как: {InternalData.User.Name.Trim()} (Гость)";
+                    break;
+            }
         }
 
         private void buttonToEditingGuests_Click(object sender, EventArgs e)

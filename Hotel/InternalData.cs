@@ -10,6 +10,7 @@ namespace Hotel
     internal static class InternalData
     {
         private static string connectionString = "Data Source=(local);Initial Catalog=HotelDB;Integrated Security=true";
+        public static User User { get; private set; } = new User(string.Empty, -1);
 
         public static List<Guest> Guests = new List<Guest>();
         public static List<Room> Rooms = new List<Room>();
@@ -20,6 +21,56 @@ namespace Hotel
             GetGuestsFromDB();
             GetRoomsFromDB();
             GetRoomAllocationFromDB();
+        }
+
+        public static void GetUserFromDB(string login, string password)
+        {
+            User = new User(string.Empty, -1);
+            try
+            {
+                string sqlExpression = $"SELECT Name, Type_Of_User FROM Users WHERE Login = '{login}' AND Password = '{password}'";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    string userName = string.Empty;
+                    int typeOfUser = -1;
+                    while (reader.Read())
+                    {
+                        userName = reader.GetString(0);
+                        typeOfUser = reader.GetInt32(1);
+                    }
+
+                    User = new User(userName, typeOfUser);
+
+                    reader.Close();
+                    connection.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                string error = string.Empty;
+
+                foreach (SqlError err in ex.Errors)
+                {
+                    error += "Message: "
+                    + err.Message
+                    + "\n"
+                    + "Level: "
+                    + err.Class
+                    + "\n"
+                    + "Procedure: "
+                    + err.Procedure
+                    + "\n"
+                    + "Line Number: "
+                    + err.LineNumber
+                    + "\n";
+                    MessageBox.Show(error);
+                }
+            }
         }
 
         public static void GetGuestsFromDB()
