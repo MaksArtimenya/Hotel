@@ -190,9 +190,13 @@ namespace Hotel
             }
             InternalData.RemoveGuest(guest);
             listBoxShowGuests.Items.Remove(listBoxShowGuests.Items[listBoxShowGuests.SelectedIndex]);
-            Room bufRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
-            InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
-                bufRoom.OccupiedPlaces - 1, bufRoom.Price));
+            if (bufIdOfAvaibleRooms != 0)
+            {
+                Room bufRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
+                InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
+                    bufRoom.OccupiedPlaces - 1, bufRoom.Price));
+            }
+            
             buttonCancel_Click(sender, e);
         }
 

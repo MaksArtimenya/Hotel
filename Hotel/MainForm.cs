@@ -125,7 +125,7 @@ namespace Hotel
                 for (int i = 0; i < InternalData.Guests.Count; i++)
                 {
                     bool found = false;
-                    if (InternalData.Guests[i].FullName.Trim() == desired)
+                    if (InternalData.Guests[i].FullName.Trim().Contains(desired))
                     {
                         found = true;
                     }
