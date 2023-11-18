@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,111 +11,102 @@ namespace Hotel
     internal static class InternalData
     {
         private static string connectionString = "Data Source=(local);Initial Catalog=HotelDB;Integrated Security=true";
+
+        public static TcpClient? Client { get; private set; }
+        public static NetworkStream? NetworkStream { get; private set; }
         public static User User { get; private set; } = new User(string.Empty, -1);
 
-        public static List<Guest> Guests = new List<Guest>();
-        public static List<Room> Rooms = new List<Room>();
-        public static List<RoomAllocation> RoomAllocations = new List<RoomAllocation>();
+        public static List<Guest> Guests { get; set; } = new List<Guest>();
+        public static List<Room> Rooms { get; set; } = new List<Room>();
+        public static List<RoomAllocation> RoomAllocations { get; set; } = new List<RoomAllocation>();
 
         public static void Initialization()
         {
-            GetGuestsFromDB();
-            GetRoomsFromDB();
-            GetRoomAllocationFromDB();
+            GetGuestsFromServer();
+            GetRoomsFromServer();
+            GetRoomAllocationFromServer();
         }
 
-        public static void GetUserFromDB(string login, string password)
+        public static void GetUserFromServer(string login, string password, string ipAddress, string port)
         {
             User = new User(string.Empty, -1);
             try
             {
-                string sqlExpression = $"SELECT Name, Type_Of_User FROM Users WHERE Login = '{login}' AND Password = '{password}'";
+                Client = new TcpClient(ipAddress, int.Parse(port));
+                NetworkStream = Client.GetStream();
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                string message = $"Connect\nSELECT Name, Type_Of_User FROM Users WHERE Login = '{login}' AND Password = '{password}'";
+
+                byte[] data = Encoding.Unicode.GetBytes(message);
+                NetworkStream.Write(data, 0, data.Length);
+                data = new byte[256];
+                StringBuilder response = new StringBuilder();
+                int bytes = 0;
+                do
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
+                    bytes = NetworkStream.Read(data, 0, data.Length);
+                    response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                }
+                while (NetworkStream.DataAvailable);
 
-                    string userName = string.Empty;
-                    int typeOfUser = -1;
-                    while (reader.Read())
-                    {
-                        userName = reader.GetString(0);
-                        typeOfUser = reader.GetInt32(1);
-                    }
+                message = response.ToString();
 
-                    User = new User(userName, typeOfUser);
-
-                    reader.Close();
-                    connection.Close();
+                User = User.GetUser(message);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("Пользователь не найден");
+                if (Client is not null && NetworkStream is not null)
+                {
+                    Client.Close();
+                    NetworkStream.Close();
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
-        public static void GetGuestsFromDB()
+        public static void GetGuestsFromServer()
         {
             try
             {
-                string sqlExpression = "SELECT * FROM Guests";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    Guests.Clear();
-                    while (reader.Read())
+                    string message = "GetGuests";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
                     {
-                        Guests.Add(new Guest(reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
+                    while (NetworkStream.DataAvailable);
 
-                    reader.Close();
-                    connection.Close();
+                    message = response.ToString();
+                    Guests.Clear();
+                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    int i = 0;
+                    while (i < strings.Length)
+                    {
+                        string guestString = string.Empty;
+                        for (int j = 0; j < 5; j++)
+                        {
+                            guestString += strings[i + j] + "\n";
+                        }
+
+                        Guests.Add(Guest.GetGuest(guestString));
+                        i += 5;
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -123,46 +115,30 @@ namespace Hotel
             int guestID = -1;
             try
             {
-                string sqlExpression = $"SELECT ID_Guest FROM Guests WHERE " +
-                    $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
-                    $"AND Arrival_Date = '{guest.ArrivalDate}' AND Length_Of_Stay = '{guest.LengthOfStay}'";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
-                    
-                    
-                    while (reader.Read())
+                    string message = $"GetGuestID\nSELECT ID_Guest FROM Guests WHERE " +
+                        $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
+                        $"AND Arrival_Date = '{guest.ArrivalDate}' AND Length_Of_Stay = '{guest.LengthOfStay}'";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
                     {
-                        guestID = reader.GetInt32(0);
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
+                    while (NetworkStream.DataAvailable);
 
-                    reader.Close();
-                    connection.Close();
+                    message = response.ToString();
+                    guestID = int.Parse(message);
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
 
             return guestID;
@@ -173,66 +149,41 @@ namespace Hotel
             List<Guest> guests = new List<Guest>();
             try
             {
-                List<int> guestsID = new List<int>();
-                string sqlExpression = $"SELECT ID_Guest FROM RoomAllocation WHERE " +
-                    $"Number_Of_Room = {room.Number}";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                    string message = "GuestsByRoom\nSELECT ID_Guest FROM RoomAllocation WHERE " +
+                        $"Number_Of_Room = {room.Number}";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
                     {
-                        guestsID.Add(reader.GetInt32(0));
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
+                    while (NetworkStream.DataAvailable);
 
-                    reader.Close();
-                    connection.Close();
-                }
-
-                for (int i = 0; i < guestsID.Count; i++)
-                {
-                    string sqlExpression2 = $"SELECT * FROM Guests WHERE " +
-                    $"ID_Guest = {guestsID[i]}";
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    message = response.ToString();
+                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    int i = 0;
+                    while (i < strings.Length)
                     {
-                        connection.Open();
-                        SqlCommand command = new SqlCommand(sqlExpression2, connection);
-                        SqlDataReader reader = command.ExecuteReader();
-
-                        while (reader.Read())
+                        string guestString = string.Empty;
+                        for (int j = 0; j < 5; j++)
                         {
-                            guests.Add(new Guest(reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                            guestString += strings[i + j] + "\n";
                         }
 
-                        reader.Close();
-                        connection.Close();
+                        guests.Add(Guest.GetGuest(guestString));
+                        i += 5;
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
 
             return guests;
@@ -240,459 +191,460 @@ namespace Hotel
 
         public static void AddGuest(Guest guest)
         {
-            Guests.Add(guest);
             try
             {
-                string sqlExpression = $"INSERT INTO Guests (Full_Name, Gender, Passport_ID, Arrival_Date, Length_Of_Stay) VALUES " +
-                    $"('{guest.FullName}', '{guest.Gender}', '{guest.PassportID}', '{guest.ArrivalDate}', '{guest.LengthOfStay}')";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
+                    string message = $"SqlExpression\nINSERT INTO Guests (Full_Name, Gender, Passport_ID, Arrival_Date, Length_Of_Stay) VALUES " +
+                        $"('{guest.FullName}', '{guest.Gender}', '{guest.PassportID}', '{guest.ArrivalDate}', '{guest.LengthOfStay}')";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetGuestsFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to add guest: {message}");
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void RemoveGuest(Guest guest)
         {
-            Guests.Remove(guest);
             try
             {
-                string sqlExpression = $"DELETE FROM Guests WHERE " +
-                    $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
-                    $"AND Arrival_Date = '{guest.ArrivalDate}' AND Length_Of_Stay = '{guest.LengthOfStay}'";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                    string message = $"SqlExpression\nDELETE FROM Guests WHERE " +
+                        $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
+                        $"AND Arrival_Date = '{guest.ArrivalDate}' AND Length_Of_Stay = '{guest.LengthOfStay}'";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
 
-                Initialization();
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetGuestsFromServer();
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to remove guest: {message}");
+                    }
+                }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void EditGuest(Guest oldGuest, Guest newGuest)
         {
-            Guests[Guests.IndexOf(oldGuest)] = newGuest;
             try
             {
-                string sqlExpression = $"UPDATE Guests SET " +
-                    $"Full_Name = '{newGuest.FullName}', Gender = '{newGuest.Gender}', Passport_ID = '{newGuest.PassportID}'" +
-                    $", Arrival_Date = '{newGuest.ArrivalDate}', Length_Of_Stay = '{newGuest.LengthOfStay}' WHERE " +
-                    $"Full_Name = '{oldGuest.FullName}' AND Gender = '{oldGuest.Gender}' AND Passport_ID = '{oldGuest.PassportID}' " +
-                    $"AND Arrival_Date = '{oldGuest.ArrivalDate}' AND Length_Of_Stay = '{oldGuest.LengthOfStay}'";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                    string message = $"SqlExpression\nUPDATE Guests SET " +
+                        $"Full_Name = '{newGuest.FullName}', Gender = '{newGuest.Gender}', Passport_ID = '{newGuest.PassportID}'" +
+                        $", Arrival_Date = '{newGuest.ArrivalDate}', Length_Of_Stay = '{newGuest.LengthOfStay}' WHERE " +
+                        $"Full_Name = '{oldGuest.FullName}' AND Gender = '{oldGuest.Gender}' AND Passport_ID = '{oldGuest.PassportID}' " +
+                        $"AND Arrival_Date = '{oldGuest.ArrivalDate}' AND Length_Of_Stay = '{oldGuest.LengthOfStay}'";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
 
-                Initialization();
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetGuestsFromServer();
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to edit guest: {message}");
+                    }
+                }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
-        public static void GetRoomsFromDB()
+        public static void GetRoomsFromServer()
         {
             try
             {
-                string sqlExpression = "SELECT * FROM Rooms";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    Rooms.Clear();
-                    while (reader.Read())
+                    string message = "GetRooms";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
                     {
-                        Rooms.Add(new Room(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3)));
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
+                    while (NetworkStream.DataAvailable);
 
-                    reader.Close();
-                    connection.Close();
+                    message = response.ToString();
+                    Rooms.Clear();
+                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    int i = 0;
+                    while (i < strings.Length)
+                    {
+                        string roomString = string.Empty;
+                        for (int j = 0; j < 4; j++)
+                        {
+                            roomString += strings[i + j] + "\n";
+                        }
+
+                        Rooms.Add(Room.GetRoom(roomString));
+                        i += 4;
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void AddRoom(Room room)
         {
-            Rooms.Add(room);
             try
             {
-                string sqlExpression = $"INSERT INTO Rooms (Number, Number_Of_Places, Occupied_Places, Price) VALUES " +
-                    $"({room.Number}, {room.NumberOfPlaces}, {room.OccupiedPlaces}, {room.Price})";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
+                    string message = $"SqlExpression\nINSERT INTO Rooms (Number, Number_Of_Places, Occupied_Places, Price) VALUES " +
+                        $"({room.Number}, {room.NumberOfPlaces}, {room.OccupiedPlaces}, {room.Price})";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomsFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to add room: {message}");
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void RemoveRoom(Room room)
         {
-            Rooms.Remove(room);
             try
             {
-                string sqlExpression = $"DELETE FROM Rooms WHERE " +
-                    $"Number = {room.Number} AND Number_Of_Places = {room.NumberOfPlaces} " +
-                    $"AND Occupied_Places = {room.OccupiedPlaces} AND Price = {room.Price}";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                    string message = $"SqlExpression\nDELETE FROM Rooms WHERE " +
+                        $"Number = {room.Number} AND Number_Of_Places = {room.NumberOfPlaces} " +
+                        $"AND Occupied_Places = {room.OccupiedPlaces} AND Price = {room.Price}";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
 
-                Initialization();
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomsFromServer();
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to remove room: {message}");
+                    }
+                }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void EditRoom(Room oldRoom, Room newRoom)
         {
-            Rooms[Rooms.IndexOf(oldRoom)] = newRoom;
             try
             {
-                string sqlExpression = $"UPDATE Rooms SET " +
-                    $"Number = {newRoom.Number}, Number_Of_Places = {newRoom.NumberOfPlaces}," +
-                    $" Occupied_Places = {newRoom.OccupiedPlaces}, Price = {newRoom.Price} WHERE " +
-                    $"Number = {oldRoom.Number} AND Number_Of_Places = {oldRoom.NumberOfPlaces} AND" +
-                    $" Occupied_Places = {oldRoom.OccupiedPlaces} AND Price = {oldRoom.Price}";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                    string message = $"SqlExpression\nUPDATE Rooms SET " +
+                        $"Number = {newRoom.Number}, Number_Of_Places = {newRoom.NumberOfPlaces}," +
+                        $" Occupied_Places = {newRoom.OccupiedPlaces}, Price = {newRoom.Price} WHERE " +
+                        $"Number = {oldRoom.Number} AND Number_Of_Places = {oldRoom.NumberOfPlaces} AND" +
+                        $" Occupied_Places = {oldRoom.OccupiedPlaces} AND Price = {oldRoom.Price}";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
 
-                Initialization();
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomsFromServer();
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to edit room: {message}");
+                    }
+                }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
-        public static void GetRoomAllocationFromDB()
+        public static void GetRoomAllocationFromServer()
         {
             try
             {
-                string sqlExpression = "SELECT * FROM RoomAllocation";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    RoomAllocations.Clear();
-                    while (reader.Read())
+                    string message = "GetRoomAllocation";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
                     {
-                        RoomAllocations.Add(new RoomAllocation(reader.GetInt32(0), reader.GetInt32(1)));
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     }
+                    while (NetworkStream.DataAvailable);
 
-                    reader.Close();
-                    connection.Close();
+                    message = response.ToString();
+                    RoomAllocations.Clear();
+                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    int i = 0;
+                    while (i < strings.Length)
+                    {
+                        string roomAllocationString = string.Empty;
+                        for (int j = 0; j < 2; j++)
+                        {
+                            roomAllocationString += strings[i + j] + "\n";
+                        }
+
+                        RoomAllocations.Add(RoomAllocation.GetRoomAllocation(roomAllocationString));
+                        i += 2;
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void AddRoomAllocation(RoomAllocation roomAllocation)
         {
-            RoomAllocations.Add(roomAllocation);
             try
             {
-                string sqlExpression = $"INSERT INTO RoomAllocation (ID_Guest, Number_Of_Room) VALUES " +
-                    $"({roomAllocation.IDGuest}, {roomAllocation.NumberOfRoom})";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
+                    string message = $"SqlExpression\nINSERT INTO RoomAllocation (ID_Guest, Number_Of_Room) VALUES " +
+                        $"({roomAllocation.IDGuest}, {roomAllocation.NumberOfRoom})";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to add room allocation: {message}");
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void RemoveRoomAllocation(RoomAllocation roomAllocation)
         {
-            RoomAllocations.Remove(roomAllocation);
             try
             {
-                string sqlExpression = $"DELETE FROM RoomAllocation WHERE " +
-                    $"ID_Guest = {roomAllocation.IDGuest} AND Number_Of_Room = {roomAllocation.NumberOfRoom}";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
+                    string message = $"SqlExpression\nDELETE FROM RoomAllocation WHERE " +
+                        $"ID_Guest = {roomAllocation.IDGuest} AND Number_Of_Room = {roomAllocation.NumberOfRoom}";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to remove room allocation: {message}");
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
-
-                foreach (SqlError err in ex.Errors)
-                {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 
         public static void EditRoomAllocation(RoomAllocation oldRoomAllocation, RoomAllocation newRoomAllocation)
         {
-            RoomAllocations[RoomAllocations.IndexOf(oldRoomAllocation)] = newRoomAllocation;
             try
             {
-                string sqlExpression = $"UPDATE RoomAllocation SET " +
-                    $"ID_Guest = {newRoomAllocation.IDGuest}, Number_Of_Room = {newRoomAllocation.NumberOfRoom} WHERE " +
-                    $"ID_Guest = {oldRoomAllocation.IDGuest} AND Number_Of_Room = {oldRoomAllocation.NumberOfRoom}";
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (NetworkStream is not null)
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    int number = command.ExecuteNonQuery();
-                    connection.Close();
+                    string message = $"SqlExpression\nUPDATE RoomAllocation SET " +
+                        $"ID_Guest = {newRoomAllocation.IDGuest}, Number_Of_Room = {newRoomAllocation.NumberOfRoom} WHERE " +
+                        $"ID_Guest = {oldRoomAllocation.IDGuest} AND Number_Of_Room = {oldRoomAllocation.NumberOfRoom}";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomAllocationFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to edit room allocation: {message}");
+                    }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                string error = string.Empty;
+                MessageBox.Show(ex.Message);
+            }
+        }
 
-                foreach (SqlError err in ex.Errors)
+        public static void DisconnectFromServer()
+        {
+            try
+            {
+                if (NetworkStream is not null && Client is not null)
                 {
-                    error += "Message: "
-                    + err.Message
-                    + "\n"
-                    + "Level: "
-                    + err.Class
-                    + "\n"
-                    + "Procedure: "
-                    + err.Procedure
-                    + "\n"
-                    + "Line Number: "
-                    + err.LineNumber
-                    + "\n";
-                    MessageBox.Show(error);
+                    string message = $"Disconnect";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+
+                    NetworkStream.Close();
+                    Client.Close();
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

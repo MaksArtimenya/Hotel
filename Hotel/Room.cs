@@ -25,6 +25,12 @@ namespace Hotel
             Price = price;
         }
 
+        public static Room GetRoom(string roomString)
+        {
+            string[] strings = roomString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            return new Room(int.Parse(strings[0]), int.Parse(strings[1]), int.Parse(strings[2]), int.Parse(strings[3]));
+        }
+
         public override string ToString()
         {
             if (Number != -1)

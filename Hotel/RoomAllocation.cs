@@ -17,6 +17,12 @@ namespace Hotel
             NumberOfRoom = numberOfRoom;
         }
 
+        public static RoomAllocation GetRoomAllocation(string roomAllocationString)
+        {
+            string[] strings = roomAllocationString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            return new RoomAllocation(int.Parse(strings[0]), int.Parse(strings[1]));
+        }
+
         public override bool Equals(object? obj)
         {
             if (obj is null ||  obj.GetType() != typeof(RoomAllocation))

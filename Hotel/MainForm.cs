@@ -170,5 +170,10 @@ namespace Hotel
             dataGridViewShowGuests.Rows.Clear();
             textBoxDesiredObject.Text = string.Empty;
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            InternalData.DisconnectFromServer();
+        }
     }
 }

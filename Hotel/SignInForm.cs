@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,17 +20,20 @@ namespace Hotel
 
         private void buttonSignIn_Click(object sender, EventArgs e)
         {
-            InternalData.GetUserFromDB(textBoxLogin.Text, textBoxPassword.Text);
-            if (InternalData.User.Equals(new User(string.Empty, -1)))
+            try
             {
-                MessageBox.Show("Неверный логин или пароль");
+                InternalData.GetUserFromServer(textBoxLogin.Text, textBoxPassword.Text, textBoxIpAddress.Text, textBoxPort.Text);
+                if (!InternalData.User.Equals(new User(string.Empty, -1)))
+                {
+                    InternalData.Initialization();
+                    new MainForm().ShowDialog();
+                    textBoxLogin.Text = string.Empty;
+                    textBoxPassword.Text = string.Empty;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                InternalData.Initialization();
-                new MainForm().ShowDialog();
-                textBoxLogin.Text = string.Empty;
-                textBoxPassword.Text = string.Empty;
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -45,20 +49,33 @@ namespace Hotel
 
         private void CheckingTextBoxes()
         {
-            bool check = true;
-            if (textBoxLogin.Text == string.Empty || textBoxPassword.Text == string.Empty)
+            try
             {
-                check = false;
+                IPAddress.Parse(textBoxIpAddress.Text);
+                int.Parse(textBoxPort.Text);
+                if (textBoxLogin.Text != string.Empty && textBoxPassword.Text != string.Empty && textBoxPort.Text.Length == 4)
+                {
+                    buttonSignIn.Enabled = true;
+                }
+                else
+                {
+                    buttonSignIn.Enabled = false;
+                }
             }
-
-            if (check)
-            {
-                buttonSignIn.Enabled = true;
-            }
-            else
+            catch
             {
                 buttonSignIn.Enabled = false;
             }
+        }
+
+        private void textBoxIpAddress_TextChanged(object sender, EventArgs e)
+        {
+            CheckingTextBoxes();
+        }
+
+        private void textBoxPort_TextChanged(object sender, EventArgs e)
+        {
+            CheckingTextBoxes();
         }
     }
 }

@@ -23,6 +23,12 @@ namespace Hotel
             LengthOfStay = lengthOfStay;
         }
 
+        public static Guest GetGuest(string guestString)
+        {
+            string[] strings = guestString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            return new Guest(strings[0], strings[1], strings[2], strings[3], strings[4]);
+        }
+
         public override string ToString()
         {
             return FullName;

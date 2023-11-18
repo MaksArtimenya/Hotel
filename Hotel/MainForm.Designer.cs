@@ -269,6 +269,7 @@
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Гостиница";
+            FormClosing += MainForm_FormClosing;
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
