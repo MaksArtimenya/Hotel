@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hotel
+﻿namespace Hotel.Objects
 {
     internal class RoomAllocation
     {
@@ -25,7 +18,7 @@ namespace Hotel
 
         public override bool Equals(object? obj)
         {
-            if (obj is null ||  obj.GetType() != typeof(RoomAllocation))
+            if (obj is null || obj.GetType() != typeof(RoomAllocation))
             {
                 return false;
             }

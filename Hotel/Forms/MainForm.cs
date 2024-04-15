@@ -1,14 +1,18 @@
-using System.Data.SqlClient;
+using Hotel.Internal;
 
 namespace Hotel
 {
     public partial class MainForm : Form
     {
+        private bool checkConnection = true;
+
         public MainForm()
         {
             InitializeComponent();
             ChangeLabelWelcomeText();
             CheckingTypeOfUser();
+
+            Task.Run(CheckingConnection);
         }
 
         private void CheckingTypeOfUser()
@@ -173,7 +177,36 @@ namespace Hotel
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            checkConnection = false;
             InternalData.DisconnectFromServer();
+        }
+
+        private void timerForErrorLabel_Tick(object sender, EventArgs e)
+        {
+            if (InternalData.IsConnected)
+            {
+                labelError.Visible = false;
+                progressBarReconnect.Visible = false;
+            }
+            else
+            {
+                labelError.Visible = true;
+                progressBarReconnect.Visible = true;
+            }
+        }
+
+        private async Task CheckingConnection()
+        {
+            while (checkConnection)
+            {
+                InternalData.TestingConnection();
+                if (!InternalData.IsConnected)
+                {
+                    InternalData.ReconnectToServer();
+                }
+
+                await Task.Delay(3000);
+            }
         }
     }
 }

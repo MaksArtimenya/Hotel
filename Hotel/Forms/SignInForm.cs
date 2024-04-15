@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Net;
+using Hotel.Internal;
+using Hotel.Objects;
 
 namespace Hotel
 {
     public partial class SignInForm : Form
     {
+        public IPEndPoint? IPEndPoint { get; set; }
+
         public SignInForm()
         {
             InitializeComponent();
@@ -22,6 +17,7 @@ namespace Hotel
         {
             try
             {
+                IPEndPoint = new IPEndPoint(IPAddress.Parse(textBoxIpAddress.Text), int.Parse(textBoxPort.Text));
                 InternalData.GetUserFromServer(textBoxLogin.Text, textBoxPassword.Text, textBoxIpAddress.Text, textBoxPort.Text);
                 if (!InternalData.User.Equals(new User(string.Empty, -1)))
                 {

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using Hotel.Objects;
 
-namespace Hotel
+namespace Hotel.Internal
 {
     internal static class InternalData
     {
-        private static string connectionString = "Data Source=(local);Initial Catalog=HotelDB;Integrated Security=true";
-
+        public static readonly SignInForm signInForm = new SignInForm();
         public static TcpClient? Client { get; private set; }
         public static NetworkStream? NetworkStream { get; private set; }
+        public static bool IsConnected { get; private set; }
         public static User User { get; private set; } = new User(string.Empty, -1);
 
         public static List<Guest> Guests { get; set; } = new List<Guest>();
@@ -52,6 +48,7 @@ namespace Hotel
                 message = response.ToString();
 
                 User = User.GetUser(message);
+                IsConnected = true;
             }
             catch (IndexOutOfRangeException)
             {
@@ -72,7 +69,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = "GetGuests";
                     byte[] data = Encoding.Unicode.GetBytes(message);
@@ -103,6 +100,10 @@ namespace Hotel
                         i += 5;
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -115,7 +116,7 @@ namespace Hotel
             int guestID = -1;
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"GetGuestID\nSELECT ID_Guest FROM Guests WHERE " +
                         $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
@@ -135,6 +136,10 @@ namespace Hotel
                     message = response.ToString();
                     guestID = int.Parse(message);
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -149,7 +154,7 @@ namespace Hotel
             List<Guest> guests = new List<Guest>();
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = "GuestsByRoom\nSELECT ID_Guest FROM RoomAllocation WHERE " +
                         $"Number_Of_Room = {room.Number}";
@@ -180,6 +185,10 @@ namespace Hotel
                         i += 5;
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -193,7 +202,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nINSERT INTO Guests (Full_Name, Gender, Passport_ID, Arrival_Date, Length_Of_Stay) VALUES " +
                         $"('{guest.FullName}', '{guest.Gender}', '{guest.PassportID}', '{guest.ArrivalDate}', '{guest.LengthOfStay}')";
@@ -220,6 +229,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to add guest: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -231,7 +244,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nDELETE FROM Guests WHERE " +
                         $"Full_Name = '{guest.FullName}' AND Gender = '{guest.Gender}' AND Passport_ID = '{guest.PassportID}' " +
@@ -260,6 +273,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to remove guest: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -271,7 +288,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nUPDATE Guests SET " +
                         $"Full_Name = '{newGuest.FullName}', Gender = '{newGuest.Gender}', Passport_ID = '{newGuest.PassportID}'" +
@@ -302,6 +319,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to edit guest: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -313,7 +334,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = "GetRooms";
                     byte[] data = Encoding.Unicode.GetBytes(message);
@@ -344,6 +365,10 @@ namespace Hotel
                         i += 4;
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -355,7 +380,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nINSERT INTO Rooms (Number, Number_Of_Places, Occupied_Places, Price) VALUES " +
                         $"({room.Number}, {room.NumberOfPlaces}, {room.OccupiedPlaces}, {room.Price})";
@@ -382,6 +407,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to add room: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -393,7 +422,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nDELETE FROM Rooms WHERE " +
                         $"Number = {room.Number} AND Number_Of_Places = {room.NumberOfPlaces} " +
@@ -422,6 +451,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to remove room: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -433,7 +466,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nUPDATE Rooms SET " +
                         $"Number = {newRoom.Number}, Number_Of_Places = {newRoom.NumberOfPlaces}," +
@@ -464,6 +497,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to edit room: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -475,7 +512,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = "GetRoomAllocation";
                     byte[] data = Encoding.Unicode.GetBytes(message);
@@ -506,6 +543,10 @@ namespace Hotel
                         i += 2;
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -517,7 +558,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nINSERT INTO RoomAllocation (ID_Guest, Number_Of_Room) VALUES " +
                         $"({roomAllocation.IDGuest}, {roomAllocation.NumberOfRoom})";
@@ -544,6 +585,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to add room allocation: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -555,7 +600,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nDELETE FROM RoomAllocation WHERE " +
                         $"ID_Guest = {roomAllocation.IDGuest} AND Number_Of_Room = {roomAllocation.NumberOfRoom}";
@@ -582,6 +627,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to remove room allocation: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -593,7 +642,7 @@ namespace Hotel
         {
             try
             {
-                if (NetworkStream is not null)
+                if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nUPDATE RoomAllocation SET " +
                         $"ID_Guest = {newRoomAllocation.IDGuest}, Number_Of_Room = {newRoomAllocation.NumberOfRoom} WHERE " +
@@ -621,6 +670,10 @@ namespace Hotel
                         MessageBox.Show($"Failed to edit room allocation: {message}");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
             }
             catch (Exception ex)
             {
@@ -634,17 +687,82 @@ namespace Hotel
             {
                 if (NetworkStream is not null && Client is not null)
                 {
-                    string message = $"Disconnect";
-                    byte[] data = Encoding.Unicode.GetBytes(message);
-                    NetworkStream.Write(data, 0, data.Length);
+                    if (IsConnected)
+                    {
+                        string message = $"Disconnect";
+                        byte[] data = Encoding.Unicode.GetBytes(message);
+                        NetworkStream.Write(data, 0, data.Length);
+                    }
 
                     NetworkStream.Close();
                     Client.Close();
+                    IsConnected = false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void TestingConnection()
+        {
+            try
+            {
+                if (signInForm.IPEndPoint is null || NetworkStream is null)
+                {
+                    IsConnected = false;
+                }
+                else
+                {
+                    string message = $"Test";
+
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                }
+            }
+            catch
+            {
+                IsConnected = false;
+                if (NetworkStream is not null && Client is not null)
+                {
+                    NetworkStream.Close();
+                    Client.Close();
+                }
+            }
+        }
+
+        public static void ReconnectToServer()
+        {
+            try
+            {
+                if (Client is not null && signInForm.IPEndPoint is not null)
+                {
+                    Client = new TcpClient(signInForm.IPEndPoint.Address.ToString(), signInForm.IPEndPoint.Port);
+                    NetworkStream = Client.GetStream();
+
+                    string message = $"Reconnect\n{User.Name}\n{User.TypeOfUser}";
+
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[2048];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    IsConnected = true;
+                }
+            }
+            catch
+            {
+                IsConnected = false;
             }
         }
     }

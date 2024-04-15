@@ -13,7 +13,7 @@ namespace Hotel
             //InternalData.Initialization();
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new SignInForm());
+            Application.Run(Internal.InternalData.signInForm);
         }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             dataGridViewShowRooms = new DataGridView();
             Column1 = new DataGridViewTextBoxColumn();
             Column2 = new DataGridViewTextBoxColumn();
@@ -49,6 +50,9 @@
             Column9 = new DataGridViewTextBoxColumn();
             Column10 = new DataGridViewTextBoxColumn();
             labelWelcome = new Label();
+            labelError = new Label();
+            progressBarReconnect = new ProgressBar();
+            timerForErrorLabel = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowGuests).BeginInit();
@@ -253,11 +257,38 @@
             labelWelcome.TabIndex = 5;
             labelWelcome.Text = "Вы вошли как: ()";
             // 
+            // labelError
+            // 
+            labelError.AutoSize = true;
+            labelError.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            labelError.Location = new Point(48, 384);
+            labelError.Name = "labelError";
+            labelError.Size = new Size(235, 56);
+            labelError.TabIndex = 6;
+            labelError.Text = "Подключение к серверу\r\n             прервано";
+            labelError.Visible = false;
+            // 
+            // progressBarReconnect
+            // 
+            progressBarReconnect.Location = new Point(48, 452);
+            progressBarReconnect.Name = "progressBarReconnect";
+            progressBarReconnect.Size = new Size(235, 29);
+            progressBarReconnect.Style = ProgressBarStyle.Marquee;
+            progressBarReconnect.TabIndex = 7;
+            progressBarReconnect.Visible = false;
+            // 
+            // timerForErrorLabel
+            // 
+            timerForErrorLabel.Enabled = true;
+            timerForErrorLabel.Tick += timerForErrorLabel_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 553);
+            Controls.Add(progressBarReconnect);
+            Controls.Add(labelError);
             Controls.Add(labelWelcome);
             Controls.Add(dataGridViewShowGuests);
             Controls.Add(groupBox1);
@@ -301,5 +332,8 @@
         private DataGridViewTextBoxColumn Column5;
         private DataGridViewTextBoxColumn Column4;
         private Label labelWelcome;
+        private Label labelError;
+        private ProgressBar progressBarReconnect;
+        private System.Windows.Forms.Timer timerForErrorLabel;
     }
 }
