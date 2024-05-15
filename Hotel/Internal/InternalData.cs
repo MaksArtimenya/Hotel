@@ -87,18 +87,21 @@ namespace Hotel.Internal
 
                     message = response.ToString();
                     Guests.Clear();
-                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                    int i = 0;
-                    while (i < strings.Length)
+                    if (message != "empty")
                     {
-                        string guestString = string.Empty;
-                        for (int j = 0; j < 5; j++)
+                        string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        int i = 0;
+                        while (i < strings.Length)
                         {
-                            guestString += strings[i + j] + "\n";
-                        }
+                            string guestString = string.Empty;
+                            for (int j = 0; j < 5; j++)
+                            {
+                                guestString += strings[i + j] + "\n";
+                            }
 
-                        Guests.Add(Guest.GetGuest(guestString));
-                        i += 5;
+                            Guests.Add(Guest.GetGuest(guestString));
+                            i += 5;
+                        }
                     }
                 }
                 else
@@ -172,18 +175,21 @@ namespace Hotel.Internal
                     while (NetworkStream.DataAvailable);
 
                     message = response.ToString();
-                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                    int i = 0;
-                    while (i < strings.Length)
+                    if (message != "empty")
                     {
-                        string guestString = string.Empty;
-                        for (int j = 0; j < 5; j++)
+                        string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        int i = 0;
+                        while (i < strings.Length)
                         {
-                            guestString += strings[i + j] + "\n";
-                        }
+                            string guestString = string.Empty;
+                            for (int j = 0; j < 5; j++)
+                            {
+                                guestString += strings[i + j] + "\n";
+                            }
 
-                        guests.Add(Guest.GetGuest(guestString));
-                        i += 5;
+                            guests.Add(Guest.GetGuest(guestString));
+                            i += 5;
+                        }
                     }
                 }
                 else
@@ -352,18 +358,21 @@ namespace Hotel.Internal
 
                     message = response.ToString();
                     Rooms.Clear();
-                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                    int i = 0;
-                    while (i < strings.Length)
+                    if (message != "empty")
                     {
-                        string roomString = string.Empty;
-                        for (int j = 0; j < 4; j++)
+                        string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        int i = 0;
+                        while (i < strings.Length)
                         {
-                            roomString += strings[i + j] + "\n";
-                        }
+                            string roomString = string.Empty;
+                            for (int j = 0; j < 4; j++)
+                            {
+                                roomString += strings[i + j] + "\n";
+                            }
 
-                        Rooms.Add(Room.GetRoom(roomString));
-                        i += 4;
+                            Rooms.Add(Room.GetRoom(roomString));
+                            i += 4;
+                        }
                     }
                 }
                 else
@@ -531,18 +540,21 @@ namespace Hotel.Internal
 
                     message = response.ToString();
                     RoomAllocations.Clear();
-                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                    int i = 0;
-                    while (i < strings.Length)
+                    if (message != "empty")
                     {
-                        string roomAllocationString = string.Empty;
-                        for (int j = 0; j < 3; j++)
+                        string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        int i = 0;
+                        while (i < strings.Length)
                         {
-                            roomAllocationString += strings[i + j] + "\n";
-                        }
+                            string roomAllocationString = string.Empty;
+                            for (int j = 0; j < 3; j++)
+                            {
+                                roomAllocationString += strings[i + j] + "\n";
+                            }
 
-                        RoomAllocations.Add(RoomAllocation.GetRoomAllocation(roomAllocationString));
-                        i += 3;
+                            RoomAllocations.Add(RoomAllocation.GetRoomAllocation(roomAllocationString));
+                            i += 3;
+                        }
                     }
                 }
                 else
@@ -705,18 +717,21 @@ namespace Hotel.Internal
 
                     message = response.ToString();
                     Histories.Clear();
-                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                    int i = 0;
-                    while (i < strings.Length)
+                    if (message != "empty")
                     {
-                        string historyString = string.Empty;
-                        for (int j = 0; j < 5; j++)
+                        string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                        int i = 0;
+                        while (i < strings.Length)
                         {
-                            historyString += strings[i + j] + "\n";
-                        }
+                            string historyString = string.Empty;
+                            for (int j = 0; j < 5; j++)
+                            {
+                                historyString += strings[i + j] + "\n";
+                            }
 
-                        Histories.Add(History.GetHistory(historyString));
-                        i += 5;
+                            Histories.Add(History.GetHistory(historyString));
+                            i += 5;
+                        }
                     }
                 }
                 else
