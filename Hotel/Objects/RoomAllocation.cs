@@ -4,16 +4,18 @@
     {
         public int IDGuest { get; set; }
         public int NumberOfRoom { get; set; }
-        public RoomAllocation(int idGuest, int numberOfRoom)
+        public int TypeOfPayment { get; set; }
+        public RoomAllocation(int idGuest, int numberOfRoom, int typeOfPayment)
         {
             IDGuest = idGuest;
             NumberOfRoom = numberOfRoom;
+            TypeOfPayment = typeOfPayment;
         }
 
         public static RoomAllocation GetRoomAllocation(string roomAllocationString)
         {
             string[] strings = roomAllocationString.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            return new RoomAllocation(int.Parse(strings[0]), int.Parse(strings[1]));
+            return new RoomAllocation(int.Parse(strings[0]), int.Parse(strings[1]), int.Parse(strings[2]));
         }
 
         public override bool Equals(object? obj)

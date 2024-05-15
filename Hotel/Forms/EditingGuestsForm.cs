@@ -15,6 +15,7 @@ namespace Hotel
             CheckingTypeOfUser();
             buttonSaveNewGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
+            comboBoxPaymentMethod.SelectedIndex = 0;
         }
 
         private void CheckingTypeOfUser()
@@ -48,7 +49,7 @@ namespace Hotel
                     if (CheckFreePlacesOfRoom(selectedRoom))
                     {
                         InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            selectedRoom.Number));
+                            selectedRoom.Number, TypeOfPayment()));
                         InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
                             selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
                     }
@@ -69,21 +70,24 @@ namespace Hotel
                 {
                     if (bufIdOfAvaibleRooms != 0)
                     {
-                        if (bufIdOfAvaibleRooms != listBoxShowAvaibleRooms.SelectedIndex)
+                        if (/*bufIdOfAvaibleRooms != listBoxShowAvaibleRooms.SelectedIndex*/true)
                         {
                             Room selectedRoom = (Room)listBoxShowAvaibleRooms.Items[listBoxShowAvaibleRooms.SelectedIndex];
                             Room bufRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
                             if (CheckFreePlacesOfRoom(selectedRoom))
                             {
                                 RoomAllocation oldRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
-                                    bufRoom.Number);
+                                    bufRoom.Number, TypeOfPayment());
                                 RoomAllocation newRoomAllocation = new RoomAllocation(InternalData.GetGuestID(newGuest),
-                                    selectedRoom.Number);
+                                    selectedRoom.Number, TypeOfPayment());
                                 InternalData.EditRoomAllocation(oldRoomAllocation, newRoomAllocation);
-                                InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
+                                if (bufIdOfAvaibleRooms != listBoxShowAvaibleRooms.SelectedIndex)
+                                {
+                                    InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
                                     selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
-                                InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
-                                    bufRoom.OccupiedPlaces - 1, bufRoom.Price));
+                                    InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
+                                        bufRoom.OccupiedPlaces - 1, bufRoom.Price));
+                                }
                             }
                             else
                             {
@@ -97,7 +101,7 @@ namespace Hotel
                         if (CheckFreePlacesOfRoom(selectedRoom))
                         {
                             InternalData.AddRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                                selectedRoom.Number));
+                                selectedRoom.Number, TypeOfPayment()));
                             InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
                                 selectedRoom.OccupiedPlaces + 1, selectedRoom.Price));
                         }
@@ -113,11 +117,24 @@ namespace Hotel
                     {
                         Room selectedRoom = (Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms];
                         InternalData.RemoveRoomAllocation(new RoomAllocation(InternalData.GetGuestID(newGuest),
-                            selectedRoom.Number));
+                            selectedRoom.Number, TypeOfPayment()));
                         InternalData.EditRoom(selectedRoom, new Room(selectedRoom.Number, selectedRoom.NumberOfPlaces,
                             selectedRoom.OccupiedPlaces - 1, selectedRoom.Price));
                     }
                 }
+            }
+
+            try
+            {
+                if (radioButtonPayment.Checked)
+                {
+                    InternalData.AddHistory(new History(DateTime.Now.ToString(), textBoxFullName.Text, (string)comboBoxPaymentMethod.SelectedItem,
+                        int.Parse(textBoxPaymentAmount.Text), InternalData.User.Name));
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Некорректная сумма к оплате");
             }
 
             buttonCancel_Click(sender, e);
@@ -133,6 +150,15 @@ namespace Hotel
             return false;
         }
 
+        private int TypeOfPayment()
+        {
+            if (radioButtonWithoutPayment.Checked)
+            {
+                return 0;
+            }
+            else return 1 + comboBoxPaymentMethod.SelectedIndex;
+        }
+
         private void listBoxShowGuests_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBoxShowGuests.SelectedIndex != -1)
@@ -142,7 +168,7 @@ namespace Hotel
                 {
                     buttonRemoveGuest.Enabled = true;
                 }
-                
+
                 Guest selectedGuest = (Guest)listBoxShowGuests.Items[listBoxShowGuests.SelectedIndex];
                 textBoxFullName.Text = selectedGuest.FullName;
                 textBoxGender.Text = selectedGuest.Gender;
@@ -157,6 +183,16 @@ namespace Hotel
                     if (guestID == InternalData.RoomAllocations[i].IDGuest)
                     {
                         int numberOfRoom = InternalData.RoomAllocations[i].NumberOfRoom;
+                        if (InternalData.RoomAllocations[i].TypeOfPayment == 0)
+                        {
+                            radioButtonWithoutPayment.Checked = true;
+                        }
+                        else
+                        {
+                            radioButtonPayment.Checked = true;
+                            comboBoxPaymentMethod.SelectedIndex = InternalData.RoomAllocations[i].TypeOfPayment - 1;
+                        }
+
                         for (int j = 0; j < listBoxShowAvaibleRooms.Items.Count; j++)
                         {
                             if (numberOfRoom == ((Room)listBoxShowAvaibleRooms.Items[j]).Number)
@@ -179,7 +215,7 @@ namespace Hotel
             if (bufIdOfAvaibleRooms != 0)
             {
                 InternalData.RemoveRoomAllocation(new RoomAllocation(InternalData.GetGuestID(guest),
-                    ((Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms]).Number));
+                    ((Room)listBoxShowAvaibleRooms.Items[bufIdOfAvaibleRooms]).Number, TypeOfPayment()));
             }
             InternalData.RemoveGuest(guest);
             listBoxShowGuests.Items.Remove(listBoxShowGuests.Items[listBoxShowGuests.SelectedIndex]);
@@ -189,7 +225,7 @@ namespace Hotel
                 InternalData.EditRoom(bufRoom, new Room(bufRoom.Number, bufRoom.NumberOfPlaces,
                     bufRoom.OccupiedPlaces - 1, bufRoom.Price));
             }
-            
+
             buttonCancel_Click(sender, e);
         }
 
@@ -204,6 +240,8 @@ namespace Hotel
             buttonRemoveGuest.Enabled = false;
             buttonSaveNewGuest.Enabled = false;
             groupBox1.Text = namesOfGroupBox[0];
+            comboBoxPaymentMethod.SelectedIndex = 0;
+            radioButtonWithoutPayment.Checked = true;
             UpdateListBoxes();
         }
 
@@ -233,10 +271,30 @@ namespace Hotel
             if (listBoxShowAvaibleRooms.SelectedIndex == 0)
             {
                 buttonRoomInfo.Enabled = false;
+                groupBoxPayment.Enabled = false;
+                textBoxPaymentAmount.Text = string.Empty;
             }
             else
             {
                 buttonRoomInfo.Enabled = true;
+                if (CheckFreePlacesOfRoom((Room)listBoxShowAvaibleRooms.SelectedItem))
+                {
+                    groupBoxPayment.Enabled = true;
+                }
+
+                CalculatePaymentAmount();
+            }
+        }
+
+        private void CalculatePaymentAmount()
+        {
+            try
+            {
+                textBoxPaymentAmount.Text = (((Room)listBoxShowAvaibleRooms.SelectedItem).Price * int.Parse(textBoxLengthOfStay.Text)).ToString();
+            }
+            catch
+            {
+                textBoxPaymentAmount.Text = string.Empty;
             }
         }
 
@@ -277,8 +335,21 @@ namespace Hotel
         private void textBoxLengthOfStay_TextChanged(object sender, EventArgs e)
         {
             CheckTextBoxes();
+            CalculatePaymentAmount();
         }
 
-
+        private void radioButtonWithoutPayment_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonWithoutPayment.Checked)
+            {
+                comboBoxPaymentMethod.Enabled = false;
+                textBoxPaymentAmount.Enabled = false;
+            }
+            else
+            {
+                comboBoxPaymentMethod.Enabled = true;
+                textBoxPaymentAmount.Enabled = true;
+            }
+        }
     }
 }

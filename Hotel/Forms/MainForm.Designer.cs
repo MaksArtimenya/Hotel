@@ -53,6 +53,7 @@
             labelError = new Label();
             progressBarReconnect = new ProgressBar();
             timerForErrorLabel = new System.Windows.Forms.Timer(components);
+            buttonToHistory = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowRooms).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewShowGuests).BeginInit();
@@ -282,11 +283,22 @@
             timerForErrorLabel.Enabled = true;
             timerForErrorLabel.Tick += timerForErrorLabel_Tick;
             // 
+            // buttonToHistory
+            // 
+            buttonToHistory.Location = new Point(508, 412);
+            buttonToHistory.Name = "buttonToHistory";
+            buttonToHistory.Size = new Size(265, 52);
+            buttonToHistory.TabIndex = 8;
+            buttonToHistory.Text = "История платежей";
+            buttonToHistory.UseVisualStyleBackColor = true;
+            buttonToHistory.Click += buttonToHistory_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 553);
+            Controls.Add(buttonToHistory);
             Controls.Add(progressBarReconnect);
             Controls.Add(labelError);
             Controls.Add(labelWelcome);
@@ -335,5 +347,6 @@
         private Label labelError;
         private ProgressBar progressBarReconnect;
         private System.Windows.Forms.Timer timerForErrorLabel;
+        private Button buttonToHistory;
     }
 }

@@ -15,6 +15,7 @@ namespace Hotel.Internal
         public static List<Guest> Guests { get; set; } = new List<Guest>();
         public static List<Room> Rooms { get; set; } = new List<Room>();
         public static List<RoomAllocation> RoomAllocations { get; set; } = new List<RoomAllocation>();
+        public static List<History> Histories { get; set; } = new List<History>();
 
         public static void Initialization()
         {
@@ -472,7 +473,8 @@ namespace Hotel.Internal
                         $"Number = {newRoom.Number}, Number_Of_Places = {newRoom.NumberOfPlaces}," +
                         $" Occupied_Places = {newRoom.OccupiedPlaces}, Price = {newRoom.Price} WHERE " +
                         $"Number = {oldRoom.Number} AND Number_Of_Places = {oldRoom.NumberOfPlaces} AND" +
-                        $" Occupied_Places = {oldRoom.OccupiedPlaces} AND Price = {oldRoom.Price}";
+                        /*$" Occupied_Places = {oldRoom.OccupiedPlaces} AND Price = {oldRoom.Price}";*/
+                        $" Price = {oldRoom.Price}";
                     byte[] data = Encoding.Unicode.GetBytes(message);
                     NetworkStream.Write(data, 0, data.Length);
                     data = new byte[256];
@@ -534,13 +536,13 @@ namespace Hotel.Internal
                     while (i < strings.Length)
                     {
                         string roomAllocationString = string.Empty;
-                        for (int j = 0; j < 2; j++)
+                        for (int j = 0; j < 3; j++)
                         {
                             roomAllocationString += strings[i + j] + "\n";
                         }
 
                         RoomAllocations.Add(RoomAllocation.GetRoomAllocation(roomAllocationString));
-                        i += 2;
+                        i += 3;
                     }
                 }
                 else
@@ -560,8 +562,8 @@ namespace Hotel.Internal
             {
                 if (NetworkStream is not null && IsConnected)
                 {
-                    string message = $"SqlExpression\nINSERT INTO RoomAllocation (ID_Guest, Number_Of_Room) VALUES " +
-                        $"({roomAllocation.IDGuest}, {roomAllocation.NumberOfRoom})";
+                    string message = $"SqlExpression\nINSERT INTO RoomAllocation (ID_Guest, Number_Of_Room, Type_Of_Payment) VALUES " +
+                        $"({roomAllocation.IDGuest}, {roomAllocation.NumberOfRoom}, {roomAllocation.TypeOfPayment})";
                     byte[] data = Encoding.Unicode.GetBytes(message);
                     NetworkStream.Write(data, 0, data.Length);
                     data = new byte[256];
@@ -645,7 +647,8 @@ namespace Hotel.Internal
                 if (NetworkStream is not null && IsConnected)
                 {
                     string message = $"SqlExpression\nUPDATE RoomAllocation SET " +
-                        $"ID_Guest = {newRoomAllocation.IDGuest}, Number_Of_Room = {newRoomAllocation.NumberOfRoom} WHERE " +
+                        $"ID_Guest = {newRoomAllocation.IDGuest}, Number_Of_Room = {newRoomAllocation.NumberOfRoom}, " +
+                        $"Type_Of_Payment = {newRoomAllocation.TypeOfPayment} WHERE " +
                         $"ID_Guest = {oldRoomAllocation.IDGuest} AND Number_Of_Room = {oldRoomAllocation.NumberOfRoom}";
                     byte[] data = Encoding.Unicode.GetBytes(message);
                     NetworkStream.Write(data, 0, data.Length);
@@ -668,6 +671,94 @@ namespace Hotel.Internal
                     else
                     {
                         MessageBox.Show($"Failed to edit room allocation: {message}");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void GetHistoryFromServer()
+        {
+            try
+            {
+                if (NetworkStream is not null && IsConnected)
+                {
+                    string message = "GetHistory";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+                    Histories.Clear();
+                    string[] strings = message.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    int i = 0;
+                    while (i < strings.Length)
+                    {
+                        string historyString = string.Empty;
+                        for (int j = 0; j < 5; j++)
+                        {
+                            historyString += strings[i + j] + "\n";
+                        }
+
+                        Histories.Add(History.GetHistory(historyString));
+                        i += 5;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Нет соединения с сервером");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void AddHistory(History history)
+        {
+            try
+            {
+                if (NetworkStream is not null && IsConnected)
+                {
+                    string message = $"SqlExpression\nINSERT INTO PaymentsHistory (Date, Full_Name, Payment_Method, Payment_Amount, Employee) VALUES " +
+                        $"('{history.Date}', '{history.FullName}', '{history.PaymentMethod}', {history.PaymentAmount}, '{history.User}')";
+                    byte[] data = Encoding.Unicode.GetBytes(message);
+                    NetworkStream.Write(data, 0, data.Length);
+                    data = new byte[256];
+                    StringBuilder response = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = NetworkStream.Read(data, 0, data.Length);
+                        response.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (NetworkStream.DataAvailable);
+
+                    message = response.ToString();
+
+                    if (message == "Complete")
+                    {
+                        GetRoomsFromServer();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Failed to add history: {message}");
                     }
                 }
                 else

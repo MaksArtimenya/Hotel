@@ -1,3 +1,4 @@
+using Hotel.Forms;
 using Hotel.Internal;
 
 namespace Hotel
@@ -22,9 +23,11 @@ namespace Hotel
                 case 0:
                     break;
                 case 1:
+                    buttonToHistory.Enabled = false;
                     break;
                 case 2:
                     buttonToEditingGuests.Enabled = false;
+                    buttonToHistory.Enabled = false;
                     radioButtonGuest.Enabled = false;
                     break;
             }
@@ -207,6 +210,12 @@ namespace Hotel
 
                 await Task.Delay(3000);
             }
+        }
+
+        private void buttonToHistory_Click(object sender, EventArgs e)
+        {
+            new HistoryForm().ShowDialog();
+            buttonClearSearch_Click(sender, e);
         }
     }
 }

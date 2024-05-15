@@ -30,6 +30,11 @@
         {
             listBoxShowGuests = new ListBox();
             groupBox1 = new GroupBox();
+            groupBoxPayment = new GroupBox();
+            label7 = new Label();
+            comboBoxPaymentMethod = new ComboBox();
+            radioButtonPayment = new RadioButton();
+            radioButtonWithoutPayment = new RadioButton();
             buttonRoomInfo = new Button();
             label6 = new Label();
             label5 = new Label();
@@ -46,7 +51,10 @@
             textBoxPassportID = new TextBox();
             textBoxGender = new TextBox();
             textBoxFullName = new TextBox();
+            textBoxPaymentAmount = new TextBox();
+            label8 = new Label();
             groupBox1.SuspendLayout();
+            groupBoxPayment.SuspendLayout();
             SuspendLayout();
             // 
             // listBoxShowGuests
@@ -61,6 +69,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(groupBoxPayment);
             groupBox1.Controls.Add(buttonRoomInfo);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(label5);
@@ -84,10 +93,68 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "groupBox1";
             // 
+            // groupBoxPayment
+            // 
+            groupBoxPayment.Controls.Add(label8);
+            groupBoxPayment.Controls.Add(textBoxPaymentAmount);
+            groupBoxPayment.Controls.Add(label7);
+            groupBoxPayment.Controls.Add(comboBoxPaymentMethod);
+            groupBoxPayment.Controls.Add(radioButtonPayment);
+            groupBoxPayment.Controls.Add(radioButtonWithoutPayment);
+            groupBoxPayment.Location = new Point(342, 201);
+            groupBoxPayment.Name = "groupBoxPayment";
+            groupBoxPayment.Size = new Size(244, 219);
+            groupBoxPayment.TabIndex = 16;
+            groupBoxPayment.TabStop = false;
+            groupBoxPayment.Text = "Оплата";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(17, 90);
+            label7.Name = "label7";
+            label7.Size = new Size(116, 20);
+            label7.TabIndex = 3;
+            label7.Text = "Способ оплаты";
+            // 
+            // comboBoxPaymentMethod
+            // 
+            comboBoxPaymentMethod.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxPaymentMethod.Enabled = false;
+            comboBoxPaymentMethod.FormattingEnabled = true;
+            comboBoxPaymentMethod.Items.AddRange(new object[] { "Наличный", "Безналичный" });
+            comboBoxPaymentMethod.Location = new Point(17, 113);
+            comboBoxPaymentMethod.Name = "comboBoxPaymentMethod";
+            comboBoxPaymentMethod.Size = new Size(208, 28);
+            comboBoxPaymentMethod.TabIndex = 2;
+            // 
+            // radioButtonPayment
+            // 
+            radioButtonPayment.AutoSize = true;
+            radioButtonPayment.Location = new Point(17, 56);
+            radioButtonPayment.Name = "radioButtonPayment";
+            radioButtonPayment.Size = new Size(122, 24);
+            radioButtonPayment.TabIndex = 1;
+            radioButtonPayment.Text = "Оплата сразу";
+            radioButtonPayment.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonWithoutPayment
+            // 
+            radioButtonWithoutPayment.AutoSize = true;
+            radioButtonWithoutPayment.Checked = true;
+            radioButtonWithoutPayment.Location = new Point(17, 26);
+            radioButtonWithoutPayment.Name = "radioButtonWithoutPayment";
+            radioButtonWithoutPayment.Size = new Size(135, 24);
+            radioButtonWithoutPayment.TabIndex = 0;
+            radioButtonWithoutPayment.TabStop = true;
+            radioButtonWithoutPayment.Text = "Бронирование";
+            radioButtonWithoutPayment.UseVisualStyleBackColor = true;
+            radioButtonWithoutPayment.CheckedChanged += radioButtonWithoutPayment_CheckedChanged;
+            // 
             // buttonRoomInfo
             // 
             buttonRoomInfo.Enabled = false;
-            buttonRoomInfo.Location = new Point(342, 408);
+            buttonRoomInfo.Location = new Point(342, 166);
             buttonRoomInfo.Name = "buttonRoomInfo";
             buttonRoomInfo.Size = new Size(244, 29);
             buttonRoomInfo.TabIndex = 15;
@@ -186,7 +253,7 @@
             listBoxShowAvaibleRooms.ItemHeight = 20;
             listBoxShowAvaibleRooms.Location = new Point(342, 56);
             listBoxShowAvaibleRooms.Name = "listBoxShowAvaibleRooms";
-            listBoxShowAvaibleRooms.Size = new Size(244, 344);
+            listBoxShowAvaibleRooms.Size = new Size(244, 104);
             listBoxShowAvaibleRooms.TabIndex = 5;
             listBoxShowAvaibleRooms.SelectedIndexChanged += listBoxShowAvaibleRooms_SelectedIndexChanged;
             // 
@@ -230,6 +297,23 @@
             textBoxFullName.TabIndex = 0;
             textBoxFullName.TextChanged += textBoxFullName_TextChanged;
             // 
+            // textBoxPaymentAmount
+            // 
+            textBoxPaymentAmount.Enabled = false;
+            textBoxPaymentAmount.Location = new Point(17, 178);
+            textBoxPaymentAmount.Name = "textBoxPaymentAmount";
+            textBoxPaymentAmount.Size = new Size(208, 27);
+            textBoxPaymentAmount.TabIndex = 4;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(17, 155);
+            label8.Name = "label8";
+            label8.Size = new Size(118, 20);
+            label8.TabIndex = 5;
+            label8.Text = "Сумма к оплате";
+            // 
             // EditingGuestsForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -244,6 +328,8 @@
             Text = "Постояльцы";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            groupBoxPayment.ResumeLayout(false);
+            groupBoxPayment.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -267,5 +353,12 @@
         private Label label2;
         private Label label1;
         private Button buttonRoomInfo;
+        private GroupBox groupBoxPayment;
+        private RadioButton radioButtonWithoutPayment;
+        private Label label7;
+        private ComboBox comboBoxPaymentMethod;
+        private RadioButton radioButtonPayment;
+        private Label label8;
+        private TextBox textBoxPaymentAmount;
     }
 }
