@@ -24,11 +24,13 @@ namespace Hotel
                     break;
                 case 1:
                     buttonToHistory.Enabled = false;
+                    buttonReport.Enabled = false;
                     break;
                 case 2:
                     buttonToEditingGuests.Enabled = false;
                     buttonToHistory.Enabled = false;
                     radioButtonGuest.Enabled = false;
+                    buttonReport.Enabled = false;
                     break;
             }
         }
@@ -216,6 +218,11 @@ namespace Hotel
         {
             new HistoryForm().ShowDialog();
             buttonClearSearch_Click(sender, e);
+        }
+
+        private void buttonReport_Click(object sender, EventArgs e)
+        {
+            new ReportForm().ShowDialog();
         }
     }
 }
